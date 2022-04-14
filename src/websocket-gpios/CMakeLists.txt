@@ -35,9 +35,10 @@ add_library(websocketgpios
   Types.cpp
   StubGpioArray.cpp
   LoopbackGpioArray.cpp
+  ${RPI_SOURCES}
 )
 
-target_link_libraries(websocketgpios PUBLIC Threads::Threads)
+target_link_libraries(websocketgpios PUBLIC Threads::Threads ${RPI_LIBRARIES})
 target_compile_features(websocketgpios PUBLIC cxx_std_17)
 
 ################################################################################
