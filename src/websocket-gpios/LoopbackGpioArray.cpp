@@ -59,3 +59,16 @@ PinLevel LoopbackGpioArray::pin5_level_()
 {
     return pin_level_(pin5_state_, pin4_state_);
 }
+
+bool LoopbackGpioArray::state_is_input_(PinState_ pin_state)
+{
+    switch (pin_state)
+    {
+    case PinState_::INPUT_PU:
+    case PinState_::INPUT_PD:
+    case PinState_::INPUT_NP:
+        return true;
+    default:
+        return false;
+    }
+}
