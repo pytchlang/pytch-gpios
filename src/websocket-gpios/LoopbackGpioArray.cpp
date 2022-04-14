@@ -19,3 +19,33 @@ LoopbackGpioArray::PinState_from_PullKind_(PullKind pull_kind)
         throw new std::invalid_argument("bad pull-kind");
     }
 }
+
+PinLevel LoopbackGpioArray::pin_level_(
+    PinState_ read_pin_state, PinState_ drive_pin_state)
+{
+    // Is read-pin an output?  Report output level if so.
+    //
+    if (read_pin_state == PinState_::DRIVEN_LOW)
+        return 0;
+    if (read_pin_state == PinState_::DRIVEN_HIGH)
+        return 1;
+
+    // Is drive-pin being driven by the other end of the connection?
+    // Report its drive level if so.
+    //
+    if (drive_pin_state == PinState_::DRIVEN_LOW)
+        return 0;
+    if (drive_pin_state == PinState_::DRIVEN_HIGH)
+        return 1;
+
+    // Is read-pin pulled?  Report pull level if so.
+    //
+    if (read_pin_state == PinState_::INPUT_PU)
+        return 1;
+    if (read_pin_state == PinState_::INPUT_PD)
+        return 0;
+
+    // Indeterminate; pick something.
+    //
+    return 0;
+}

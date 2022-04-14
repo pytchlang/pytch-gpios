@@ -28,6 +28,8 @@ private:
 
     PinState_ pin4_state_ = PinState_::INPUT_NP;
     PinState_ pin5_state_ = PinState_::INPUT_NP;
+
+    PinLevel pin_level_(PinState_ read_pin_state, PinState_ drive_pin_state);
 };
 
 #endif // WEBSOCKET_GPIOS_LOOPBACKGPIOARRAY_H_
