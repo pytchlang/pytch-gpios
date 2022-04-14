@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <sstream>
+#include <functional>
 #include <cassert>
 #include <thread>
 
@@ -90,6 +91,18 @@ Outcome<void> LoopbackGpioArray::set_output(PinId pin, PinLevel level)
         oss << "cannot set pin " << pin << " to bad level " << level;
         return Failure{oss.str()};
     }
+}
+
+Outcome<void>
+LoopbackGpioArray::launch_input_monitor(PinLevelReportFun report_fun)
+{
+    report_fun_ = report_fun;
+
+    std::thread monitor_thread(
+        std::bind(&LoopbackGpioArray::run_input_monitor_, this));
+    monitor_thread.detach();
+
+    return Success<void>{};
 }
 
 PinLevel LoopbackGpioArray::pin_level_(
