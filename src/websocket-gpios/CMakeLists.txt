@@ -8,6 +8,27 @@ set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 find_package(Threads REQUIRED)
 
+########################################################################
+#
+# Determine whether to include code for driving actual RPi hardware.
+
+set(RPI_SOURCES )
+set(RPI_LIBRARIES )
+
+if(DEFINED ENABLE_PIGPIO)
+  message("-- Enabling pigpio")
+  list(APPEND RPI_SOURCES PiGpioArray.cpp)
+  list(APPEND RPI_LIBRARIES pigpio)
+  add_compile_definitions(ENABLE_PIGPIO=1)
+else()
+  message("-- Omitting pigpio")
+  add_compile_definitions(ENABLE_PIGPIO=0)
+endif()
+
+# Testing with DEFINED does not count as "using" the variable, so
+# do so now:
+set(quietCMake ${ENABLE_PIGPIO})
+
 ################################################################################
 
 add_library(websocketgpios
