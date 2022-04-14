@@ -7,4 +7,13 @@
 
 using SeqNum = uint64_t;
 
+////////////////////////////////////////////////////////////////////////////////
+
+enum class PullKind : uint8_t
+{
+    PULL_UP,
+    PULL_DOWN,
+    NO_PULL
+};
+
 #endif // WEBSOCKET_GPIOS_TYPES_H_
