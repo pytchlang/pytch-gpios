@@ -4,7 +4,26 @@
 #include <cstdint>
 #include <functional>
 #include <string>
+#include <variant>
 
+////////////////////////////////////////////////////////////////////////////////
+
+template <typename T> struct Success
+{
+    T value;
+    explicit Success(const T &v) : value(v) {}
+};
+
+template <> struct Success<void>
+{
+};
+
+struct Failure
+{
+    std::string message;
+};
+
+template <typename T> using Outcome = std::variant<Success<T>, Failure>;
 
 ////////////////////////////////////////////////////////////////////////////////
 
