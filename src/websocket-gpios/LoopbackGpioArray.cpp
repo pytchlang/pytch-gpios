@@ -49,3 +49,13 @@ PinLevel LoopbackGpioArray::pin_level_(
     //
     return 0;
 }
+
+PinLevel LoopbackGpioArray::pin4_level_()
+{
+    return pin_level_(pin4_state_, pin5_state_);
+}
+
+PinLevel LoopbackGpioArray::pin5_level_()
+{
+    return pin_level_(pin5_state_, pin4_state_);
+}
