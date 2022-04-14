@@ -22,6 +22,16 @@ LoopbackGpioArray::PinState_from_PullKind_(PullKind pull_kind)
     }
 }
 
+Outcome<void> LoopbackGpioArray::reset()
+{
+    mutex_lock_t lock{mutex_};
+
+    pin4_state_ = PinState_::INPUT_NP;
+    pin5_state_ = PinState_::INPUT_NP;
+
+    return Success<void>{};
+}
+
 Outcome<PinLevel> LoopbackGpioArray::set_as_input(PinId pin, PullKind pull_kind)
 {
     mutex_lock_t lock{mutex_};
