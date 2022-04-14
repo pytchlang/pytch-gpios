@@ -12,6 +12,7 @@ find_package(Threads REQUIRED)
 
 add_library(websocketgpios
   Types.cpp
+  StubGpioArray.cpp
 )
 
 target_link_libraries(websocketgpios PUBLIC Threads::Threads)
