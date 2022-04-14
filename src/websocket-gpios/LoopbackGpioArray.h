@@ -25,6 +25,9 @@ private:
     };
 
     PinState_ PinState_from_PullKind_(PullKind pull_kind);
+
+    PinState_ pin4_state_ = PinState_::INPUT_NP;
+    PinState_ pin5_state_ = PinState_::INPUT_NP;
 };
 
 #endif // WEBSOCKET_GPIOS_LOOPBACKGPIOARRAY_H_
