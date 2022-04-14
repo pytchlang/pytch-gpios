@@ -31,6 +31,8 @@ private:
 
     PinState_ PinState_from_PullKind_(PullKind pull_kind);
 
+    PinLevelReportFun report_fun_;
+
     PinState_ pin4_state_ = PinState_::INPUT_NP;
     PinState_ pin5_state_ = PinState_::INPUT_NP;
 
