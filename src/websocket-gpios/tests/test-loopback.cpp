@@ -64,4 +64,32 @@ static void test_loopback(IGpioArray &gpios, PinId read_pin, PinId drive_pin)
 
     auto outcome = gpios.set_as_input(drive_pin, PullKind::NO_PULL);
     REQUIRE(std::holds_alternative<Success<PinLevel>>(outcome));
+
+    {
+        INFO("reads low if pull-down")
+        auto outcome = gpios.set_as_input(read_pin, PullKind::PULL_DOWN);
+        REQUIRE(std::holds_alternative<Success<PinLevel>>(outcome));
+        REQUIRE(recorder->pin_eventually_has_level(read_pin, 0));
+    }
+
+    {
+        INFO("reads high if pull-up")
+        auto outcome = gpios.set_as_input(read_pin, PullKind::PULL_UP);
+        REQUIRE(std::holds_alternative<Success<PinLevel>>(outcome));
+        REQUIRE(recorder->pin_eventually_has_level(read_pin, 1));
+    }
+
+    {
+        INFO("reads low when other end driven low")
+        auto outcome = gpios.set_output(drive_pin, 0);
+        REQUIRE(std::holds_alternative<Success<void>>(outcome));
+        REQUIRE(recorder->pin_eventually_has_level(read_pin, 0));
+    }
+
+    {
+        INFO("reads high when other end driven high")
+        auto outcome = gpios.set_output(drive_pin, 1);
+        REQUIRE(std::holds_alternative<Success<void>>(outcome));
+        REQUIRE(recorder->pin_eventually_has_level(read_pin, 1));
+    }
 }
