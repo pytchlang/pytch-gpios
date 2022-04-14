@@ -150,3 +150,5 @@ bool LoopbackGpioArray::pin5_is_input_()
 {
     return state_is_input_(pin5_state_);
 }
+
+const std::chrono::milliseconds LoopbackGpioArray::Poll_Interval_{20};

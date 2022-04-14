@@ -2,6 +2,7 @@
 #define WEBSOCKET_GPIOS_LOOPBACKGPIOARRAY_H_
 
 #include <mutex>
+#include <chrono>
 
 #include "GpioArray.h"
 
@@ -42,6 +43,7 @@ private:
     bool pin5_is_input_();
 
     std::mutex mutex_;
+    static const std::chrono::milliseconds Poll_Interval_;
 };
 
 #endif // WEBSOCKET_GPIOS_LOOPBACKGPIOARRAY_H_
