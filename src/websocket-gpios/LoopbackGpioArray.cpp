@@ -1,4 +1,5 @@
 #include <stdexcept>
+#include <sstream>
 
 #include "LoopbackGpioArray.h"
 
@@ -17,6 +18,25 @@ LoopbackGpioArray::PinState_from_PullKind_(PullKind pull_kind)
         return PinState_::INPUT_NP;
     default:
         throw new std::invalid_argument("bad pull-kind");
+    }
+}
+
+Outcome<PinLevel> LoopbackGpioArray::set_as_input(PinId pin, PullKind pull_kind)
+{
+    mutex_lock_t lock{mutex_};
+
+    switch (pin)
+    {
+    case 4:
+        pin4_state_ = PinState_from_PullKind_(pull_kind);
+        return Success{pin4_level_()};
+    case 5:
+        pin5_state_ = PinState_from_PullKind_(pull_kind);
+        return Success{pin5_level_()};
+    default:
+        std::ostringstream oss;
+        oss << "cannot use pin " << static_cast<int>(pin) << " as an input";
+        return Failure{oss.str()};
     }
 }
 
