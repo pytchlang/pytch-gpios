@@ -44,6 +44,8 @@ private:
     bool pin4_is_input_();
     bool pin5_is_input_();
 
+    void run_input_monitor_();
+
     unsigned long seqnum_ = 1;
     std::mutex mutex_;
     static const std::chrono::milliseconds Poll_Interval_;

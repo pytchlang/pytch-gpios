@@ -1,6 +1,7 @@
 #include <stdexcept>
 #include <sstream>
 #include <cassert>
+#include <thread>
 
 #include "LoopbackGpioArray.h"
 
@@ -155,3 +156,26 @@ bool LoopbackGpioArray::pin5_is_input_()
 }
 
 const std::chrono::milliseconds LoopbackGpioArray::Poll_Interval_{20};
+
+void LoopbackGpioArray::run_input_monitor_()
+{
+    unsigned long last_reported_seqnum = 0;
+
+    while (true)
+    {
+        {
+            mutex_lock_t lock{mutex_};
+
+            if (seqnum_ != last_reported_seqnum)
+            {
+                if (pin4_is_input_())
+                    report_fun_(4, pin4_level_());
+                if (pin5_is_input_())
+                    report_fun_(5, pin5_level_());
+            }
+
+            last_reported_seqnum = seqnum_;
+        }
+        std::this_thread::sleep_for(Poll_Interval_);
+    }
+}
