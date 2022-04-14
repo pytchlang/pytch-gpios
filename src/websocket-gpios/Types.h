@@ -2,7 +2,9 @@
 #define WEBSOCKET_GPIOS_TYPES_H_
 
 #include <cstdint>
+#include <functional>
 #include <string>
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -25,5 +27,9 @@ PullKind PullKind_from_string(const std::string &pull_kind_str);
 // stream operations when, e.g., creating error messages.
 using PinId = int;
 using PinLevel = int;
+
+////////////////////////////////////////////////////////////////////////////////
+
+using PinLevelReportFun = std::function<void(PinId, PinLevel)>;
 
 #endif // WEBSOCKET_GPIOS_TYPES_H_
