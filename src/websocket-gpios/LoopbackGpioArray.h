@@ -1,6 +1,8 @@
 #ifndef WEBSOCKET_GPIOS_LOOPBACKGPIOARRAY_H_
 #define WEBSOCKET_GPIOS_LOOPBACKGPIOARRAY_H_
 
+#include <mutex>
+
 #include "GpioArray.h"
 
 class LoopbackGpioArray : public IGpioArray
@@ -15,6 +17,8 @@ public:
     Outcome<void> launch_input_monitor(PinLevelReportFun report_fun) override;
 
 private:
+    using mutex_lock_t = std::lock_guard<std::mutex>;
+
     enum class PinState_
     {
         INPUT_PU,
@@ -36,6 +40,8 @@ private:
     bool state_is_input_(PinState_ pin_state);
     bool pin4_is_input_();
     bool pin5_is_input_();
+
+    std::mutex mutex_;
 };
 
 #endif // WEBSOCKET_GPIOS_LOOPBACKGPIOARRAY_H_
