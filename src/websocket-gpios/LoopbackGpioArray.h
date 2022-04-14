@@ -23,6 +23,8 @@ private:
         DRIVEN_LOW,
         DRIVEN_HIGH
     };
+
+    PinState_ PinState_from_PullKind_(PullKind pull_kind);
 };
 
 #endif // WEBSOCKET_GPIOS_LOOPBACKGPIOARRAY_H_
