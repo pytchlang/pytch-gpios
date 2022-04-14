@@ -34,6 +34,8 @@ private:
     PinLevel pin5_level_();
 
     bool state_is_input_(PinState_ pin_state);
+    bool pin4_is_input_();
+    bool pin5_is_input_();
 };
 
 #endif // WEBSOCKET_GPIOS_LOOPBACKGPIOARRAY_H_

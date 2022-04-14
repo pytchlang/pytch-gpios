@@ -72,3 +72,13 @@ bool LoopbackGpioArray::state_is_input_(PinState_ pin_state)
         return false;
     }
 }
+
+bool LoopbackGpioArray::pin4_is_input_()
+{
+    return state_is_input_(pin4_state_);
+}
+
+bool LoopbackGpioArray::pin5_is_input_()
+{
+    return state_is_input_(pin5_state_);
+}
