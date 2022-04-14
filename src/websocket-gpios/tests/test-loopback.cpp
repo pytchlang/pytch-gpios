@@ -93,3 +93,17 @@ static void test_loopback(IGpioArray &gpios, PinId read_pin, PinId drive_pin)
         REQUIRE(recorder->pin_eventually_has_level(read_pin, 1));
     }
 }
+
+// Keep the GpioArrays alive indefinitely because we have no mechanism
+// for terminating the monitor threads which are launched, and they
+// might attempt to unlock destroyed mutexes.
+//
+static std::vector<std::shared_ptr<IGpioArray>> gpio_arrays;
+
+TEST_CASE("LoopbackGpioArray behaves")
+{
+    gpio_arrays.emplace_back(std::make_shared<LoopbackGpioArray>());
+    auto &gpios(*gpio_arrays.back());
+    test_loopback(gpios, 4, 5);
+    test_loopback(gpios, 5, 4);
+}
