@@ -45,3 +45,23 @@ bool InputRecorder::pin_eventually_has_level(PinId pin, PinLevel expected_level)
 
     return got_expected;
 }
+
+// Keep the recorders alive indefinitely because we have no mechanism
+// for terminating the monitor threads which are launched, and they
+// might send callbacks to the InputRecorder objects.
+//
+static std::vector<std::shared_ptr<InputRecorder>> recorders;
+
+static void test_loopback(IGpioArray &gpios, PinId read_pin, PinId drive_pin)
+{
+    recorders.emplace_back(std::make_shared<InputRecorder>());
+    auto recorder = recorders.back();
+
+    gpios.reset();
+
+    gpios.launch_input_monitor([recorder](PinId pin, PinLevel level)
+                               { recorder->update_pin(pin, level); });
+
+    auto outcome = gpios.set_as_input(drive_pin, PullKind::NO_PULL);
+    REQUIRE(std::holds_alternative<Success<PinLevel>>(outcome));
+}
