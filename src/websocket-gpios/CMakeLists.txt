@@ -16,3 +16,13 @@ add_library(websocketgpios
 
 target_link_libraries(websocketgpios PUBLIC Threads::Threads)
 target_compile_features(websocketgpios PUBLIC cxx_std_17)
+
+################################################################################
+
+add_executable(run-tests
+  tests/test-main.cpp
+  tests/test-Types.cpp
+)
+
+target_link_libraries(run-tests PUBLIC websocketgpios Threads::Threads)
+target_compile_features(run-tests PUBLIC cxx_std_17)
