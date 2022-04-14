@@ -15,3 +15,9 @@ private:
     std::unordered_map<PinId, PinLevel> pin_levels_;
     std::mutex mutex_;
 };
+
+void InputRecorder::update_pin(PinId pin, PinLevel level)
+{
+    mutex_lock_t lock{mutex_};
+    pin_levels_.insert_or_assign(pin, level);
+}
