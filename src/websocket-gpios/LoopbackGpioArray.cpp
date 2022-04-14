@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <sstream>
+#include <cassert>
 
 #include "LoopbackGpioArray.h"
 
@@ -36,6 +37,43 @@ Outcome<PinLevel> LoopbackGpioArray::set_as_input(PinId pin, PullKind pull_kind)
     default:
         std::ostringstream oss;
         oss << "cannot use pin " << static_cast<int>(pin) << " as an input";
+        return Failure{oss.str()};
+    }
+}
+
+Outcome<void> LoopbackGpioArray::set_output(PinId pin, PinLevel level)
+{
+    mutex_lock_t lock{mutex_};
+
+    PinState_ *state{nullptr};
+
+    switch (pin)
+    {
+    case 4:
+        state = &pin4_state_;
+        break;
+    case 5:
+        state = &pin5_state_;
+        break;
+    default:
+        std::ostringstream oss;
+        oss << "cannot use pin " << static_cast<int>(pin) << " as an output";
+        return Failure{oss.str()};
+    }
+
+    assert(state != nullptr);
+
+    switch (level)
+    {
+    case 0:
+        *state = PinState_::DRIVEN_LOW;
+        return Success<void>{};
+    case 1:
+        *state = PinState_::DRIVEN_HIGH;
+        return Success<void>{};
+    default:
+        std::ostringstream oss;
+        oss << "cannot set pin " << pin << " to bad level " << level;
         return Failure{oss.str()};
     }
 }
