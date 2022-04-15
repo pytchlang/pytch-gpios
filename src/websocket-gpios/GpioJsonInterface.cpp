@@ -38,3 +38,33 @@ std::string GpioJsonInterface::do_commands(const std::string &message)
     const nlohmann::json jOutcomes(outcomes);
     return jOutcomes.dump();
 }
+
+nlohmann::json
+GpioJsonInterface::do_one_command_(const nlohmann::json &jCommand)
+{
+    // If we fail to extract seqnum from command, zero is a reasonable
+    // value to include in the error report.
+    SeqNum seqnum = 0;
+    try
+    {
+        seqnum = jCommand.at("seqnum").get<SeqNum>();
+        const auto kind = jCommand.at("kind").get<std::string>();
+
+        if (kind == "reset")
+            return do_reset_(seqnum);
+        else if (kind == "set-input")
+            return do_set_input_(seqnum, jCommand);
+        else if (kind == "set-output")
+            return do_set_output_(seqnum, jCommand);
+        else
+        {
+            std::ostringstream oss;
+            oss << "unknown command \"" << kind << "\"";
+            return json_error_(seqnum, oss.str());
+        }
+    }
+    catch (const std::exception &err)
+    {
+        return json_error_(seqnum, err.what());
+    }
+}

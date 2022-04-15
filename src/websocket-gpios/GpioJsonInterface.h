@@ -15,6 +15,7 @@ public:
 
 private:
     using json = nlohmann::json;
+    json do_one_command_(const json &command);
 
     std::shared_ptr<IGpioArray> gpios_;
 };
