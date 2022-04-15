@@ -250,3 +250,16 @@ TEST_CASE("Unknown command")
     JsonRequires::require_sole_error(
         jResp, 10101, R"(unknown command "dance")");
 }
+
+TEST_CASE("Malformed set-input command (bad pullKind)")
+{
+    const auto jResp = LoopbackJson{}.do_commands(R"(
+        [{
+            "seqnum": 1234,
+            "kind": "set-input",
+            "pin": 5,
+            "pullKind": "sideways"
+        }]
+    )");
+    LoopbackJson::require_sole_error(jResp, 1234, "unknown pullKind");
+}
