@@ -20,6 +20,11 @@ struct LoopbackJson
         return jReply;
     }
 
+    static void require_empty_array(const json &jReply)
+    {
+        REQUIRE(jReply.size() == 0);
+    }
+
     std::shared_ptr<IGpioArray> gpios;
     GpioJsonInterface interface;
 };
