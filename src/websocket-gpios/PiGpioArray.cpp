@@ -52,3 +52,35 @@ Outcome<void> PiGpioArray::reset()
 
     return Success<void>{};
 }
+
+Outcome<PinLevel> PiGpioArray::set_as_input(PinId pin, PullKind pull_kind)
+{
+    // TODO: Reject reserved pins 0, 1, >27.
+
+    gpioSetMode(pin, PI_INPUT);
+
+    unsigned pull_up_down;
+    switch (pull_kind)
+    {
+    case PullKind::PULL_DOWN:
+        pull_up_down = PI_PUD_DOWN;
+        break;
+    case PullKind::PULL_UP:
+        pull_up_down = PI_PUD_UP;
+        break;
+    case PullKind::NO_PULL:
+        pull_up_down = PI_PUD_OFF;
+        break;
+    default:
+        return Failure{"unknown pull-kind"};
+    }
+
+    gpioSetPullUpDown(pin, pull_up_down);
+    int level = gpioRead(pin);
+
+    // TODO(ben): Set "glitch function" to give us debouncing.
+
+    gpioSetAlertFuncEx(pin, dispatch_gpio_alert_, this);
+
+    return Success<PinLevel>{level};
+}
