@@ -93,6 +93,19 @@ GpioJsonInterface::do_set_input_(SeqNum seqnum, const nlohmann::json &jCommand)
         return json_error_(seqnum, std::get<Failure>(outcome).message);
 }
 
+nlohmann::json
+GpioJsonInterface::do_set_output_(SeqNum seqnum, const nlohmann::json &jCommand)
+{
+    const auto pin = jCommand.at("pin").get<PinId>();
+    const auto level = jCommand.at("level").get<PinLevel>();
+    const auto outcome = gpios_->set_output(pin, level);
+
+    if (std::holds_alternative<Success<void>>(outcome))
+        return json_ok_(seqnum);
+    else
+        return json_error_(seqnum, std::get<Failure>(outcome).message);
+}
+
 nlohmann::json GpioJsonInterface::json_ok_(SeqNum seqnum)
 {
     nlohmann::json jResponse;
