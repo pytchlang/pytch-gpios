@@ -106,3 +106,23 @@ TEST_CASE("Valid set-output command")
     )");
     LoopbackJson::require_sole_ok(jResp, 1234);
 }
+
+TEST_CASE("Multiple valid commands in one message")
+{
+    const auto jResp = LoopbackJson{}.do_commands(R"(
+        [{
+            "seqnum": 1234,
+            "kind": "set-output",
+            "pin": 4,
+            "level": 1
+        }, {
+            "seqnum": 1235,
+            "kind": "set-input",
+            "pin": 5,
+            "pullKind": "pull-down"
+        }]
+    )");
+    REQUIRE(jResp.size() == 2);
+    LoopbackJson::require_ok(jResp[0], 1234);
+    LoopbackJson::require_report_input(jResp[1], 1235, 5, 1);
+}
