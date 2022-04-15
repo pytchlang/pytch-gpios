@@ -28,3 +28,9 @@ struct LoopbackJson
     std::shared_ptr<IGpioArray> gpios;
     GpioJsonInterface interface;
 };
+
+TEST_CASE("Zero-length array of commands")
+{
+    const auto jResp = LoopbackJson{}.do_commands("[]");
+    LoopbackJson::require_empty_array(jResp);
+}
