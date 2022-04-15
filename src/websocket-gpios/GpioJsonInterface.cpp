@@ -55,6 +55,17 @@ GpioJsonInterface::do_one_command_(const nlohmann::json &jCommand)
     SeqNum seqnum = 0;
     try
     {
+        // If we don't have an object, the accesses to "seqnum" and
+        // "kind" would fail and be caught below, but check explicitly
+        // so we can give a more helpful error message.
+        if (!jCommand.is_object())
+        {
+            std::ostringstream oss;
+            oss << "command must be JSON object, but got "
+                << jCommand.type_name();
+            return json_error_(seqnum, oss.str());
+        }
+
         seqnum = jCommand.at("seqnum").get<SeqNum>();
         const auto kind = jCommand.at("kind").get<std::string>();
 
