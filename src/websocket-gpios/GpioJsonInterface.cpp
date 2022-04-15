@@ -78,6 +78,21 @@ nlohmann::json GpioJsonInterface::do_reset_(SeqNum seqnum)
         return json_error_(seqnum, std::get<Failure>(outcome).message);
 }
 
+nlohmann::json
+GpioJsonInterface::do_set_input_(SeqNum seqnum, const nlohmann::json &jCommand)
+{
+    const auto pin = jCommand.at("pin").get<PinId>();
+    const auto pull_kind_str = jCommand.at("pullKind").get<std::string>();
+    const auto pull_kind = PullKind_from_string(pull_kind_str);
+
+    const auto outcome = gpios_->set_as_input(pin, pull_kind);
+
+    if (const auto success = std::get_if<Success<PinLevel>>(&outcome))
+        return json_report_input_(seqnum, pin, success->value);
+    else
+        return json_error_(seqnum, std::get<Failure>(outcome).message);
+}
+
 nlohmann::json GpioJsonInterface::json_ok_(SeqNum seqnum)
 {
     nlohmann::json jResponse;

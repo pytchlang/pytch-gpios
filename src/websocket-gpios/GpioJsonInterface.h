@@ -18,6 +18,7 @@ private:
     json do_one_command_(const json &command);
 
     json do_reset_(SeqNum seqnum);
+    json do_set_input_(SeqNum seqnum, const json &jCommand);
 
     static json json_ok_(SeqNum seqnum);
     static json json_report_input_(SeqNum seqnum, PinId pin, PinLevel level);
