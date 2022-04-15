@@ -83,6 +83,17 @@ struct LoopbackJson
         REQUIRE(std::regex_search(detail, expected_error_regex));
     }
 
+    static void require_sole_error(
+        const json &jReply,
+        SeqNum expected_seqnum,
+        const std::string expected_detail_regex_str)
+    {
+        INFO("reply: " << jReply);
+        REQUIRE(jReply.is_array());
+        REQUIRE(jReply.size() == 1);
+        require_error(jReply[0], expected_seqnum, expected_detail_regex_str);
+    }
+
     std::shared_ptr<IGpioArray> gpios;
     GpioJsonInterface interface;
 };
