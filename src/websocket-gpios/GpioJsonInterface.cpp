@@ -87,6 +87,17 @@ nlohmann::json GpioJsonInterface::json_ok_(SeqNum seqnum)
 }
 
 nlohmann::json
+GpioJsonInterface::json_report_input_(SeqNum seqnum, PinId pin, PinLevel level)
+{
+    nlohmann::json jResponse;
+    jResponse["seqnum"] = seqnum;
+    jResponse["kind"] = "report-input";
+    jResponse["pin"] = pin;
+    jResponse["level"] = level;
+    return jResponse;
+}
+
+nlohmann::json
 GpioJsonInterface::json_error_(SeqNum seqnum, const std::string &message)
 {
     nlohmann::json jResponse;
