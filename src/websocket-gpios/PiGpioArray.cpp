@@ -84,3 +84,15 @@ Outcome<PinLevel> PiGpioArray::set_as_input(PinId pin, PullKind pull_kind)
 
     return Success<PinLevel>{level};
 }
+
+Outcome<void> PiGpioArray::set_output(PinId pin, PinLevel level)
+{
+    // TODO: Reject reserved pins 0, 1, 27+.
+
+    // TODO(ben): Check return codes.
+    gpioSetMode(pin, PI_OUTPUT);
+    gpioWrite(pin, level);
+    gpioSetAlertFuncEx(pin, NULL, NULL);
+
+    return Success<void>{};
+}
