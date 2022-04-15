@@ -202,3 +202,16 @@ TEST_CASE("Malformed command (missing field)")
     )");
     LoopbackJson::require_sole_error(jResp, 1234, "'kind' not found");
 }
+
+TEST_CASE("Malformed message (wrong top-level type)")
+{
+    auto jResp = LoopbackJson{}.do_commands(R"(
+        { "seqnum": 1234, "kind": "reset" }
+    )");
+    LoopbackJson::require_sole_error(
+        jResp, 0, "must be JSON array, but got object");
+
+    jResp = LoopbackJson{}.do_commands("42");
+    LoopbackJson::require_sole_error(
+        jResp, 0, "must be JSON array, but got number");
+}
