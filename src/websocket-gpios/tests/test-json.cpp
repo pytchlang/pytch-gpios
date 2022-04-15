@@ -32,6 +32,12 @@ struct LoopbackJson
         REQUIRE(jResp["kind"].get<std::string>() == "ok");
     }
 
+    static void require_sole_ok(const json &jReply, SeqNum expected_seqnum)
+    {
+        REQUIRE(jReply.size() == 1);
+        require_ok(jReply[0], expected_seqnum);
+    }
+
     std::shared_ptr<IGpioArray> gpios;
     GpioJsonInterface interface;
 };
