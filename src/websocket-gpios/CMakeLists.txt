@@ -49,6 +49,7 @@ add_executable(run-tests
   tests/test-Types.cpp
   tests/test-StubGpioArray.cpp
   tests/test-loopback.cpp
+  tests/test-json.cpp
 )
 
 target_link_libraries(run-tests PUBLIC websocketgpios Threads::Threads)
