@@ -126,3 +126,29 @@ TEST_CASE("Multiple valid commands in one message")
     LoopbackJson::require_ok(jResp[0], 1234);
     LoopbackJson::require_report_input(jResp[1], 1235, 5, 1);
 }
+
+TEST_CASE("Multiple separate messages")
+{
+    // Need same interface to maintain state between messages:
+    auto interface = LoopbackJson{};
+
+    auto jResp = interface.do_commands(R"(
+        [{
+            "seqnum": 1234,
+            "kind": "set-output",
+            "pin": 4,
+            "level": 1
+        }]
+    )");
+    LoopbackJson::require_sole_ok(jResp, 1234);
+
+    jResp = interface.do_commands(R"(
+        [{
+            "seqnum": 1235,
+            "kind": "set-input",
+            "pin": 5,
+            "pullKind": "pull-down"
+        }]
+    )");
+    LoopbackJson::require_sole_report_input(jResp, 1235, 5, 1);
+}
