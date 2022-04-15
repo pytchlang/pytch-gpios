@@ -35,6 +35,7 @@ add_library(websocketgpios
   Types.cpp
   StubGpioArray.cpp
   LoopbackGpioArray.cpp
+  GpioJsonInterface.cpp
   ${RPI_SOURCES}
 )
 
