@@ -302,3 +302,10 @@ TEST_CASE("Bad set-output command (invalid field values)")
     LoopbackJson::require_sole_error(
         jResp, 1234, "cannot set pin 5 to bad level 12");
 }
+
+TEST_CASE("Construct report-input message")
+{
+    const auto reply = GpioJsonInterface::report_input_message(17, 1);
+    const auto jReply = json::parse(reply);
+    LoopbackJson::require_sole_report_input(jReply, 0, 17, 1);
+}
