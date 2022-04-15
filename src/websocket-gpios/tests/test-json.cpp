@@ -263,3 +263,17 @@ TEST_CASE("Malformed set-input command (bad pullKind)")
     )");
     LoopbackJson::require_sole_error(jResp, 1234, "unknown pullKind");
 }
+
+TEST_CASE("Bad set-input command (invalid pin)")
+{
+    const auto jResp = LoopbackJson{}.do_commands(R"(
+        [{
+            "seqnum": 1234,
+            "kind": "set-input",
+            "pin": 55,
+            "pullKind": "no-pull"
+        }]
+    )");
+    LoopbackJson::require_sole_error(
+        jResp, 1234, "cannot use pin 55 as an input");
+}
