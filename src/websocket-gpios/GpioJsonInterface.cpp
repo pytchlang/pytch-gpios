@@ -20,6 +20,17 @@ std::string GpioJsonInterface::do_commands(const std::string &message)
     {
         const auto jMessage = nlohmann::json::parse(message);
 
+        // If we don't have an array, the iteration below might
+        // succeed, but leads to unhelpful error messages.  Check now,
+        // so we can give a more helpful error.
+        if (!jMessage.is_array())
+        {
+            std::ostringstream oss;
+            oss << "message must be JSON array, but got "
+                << jMessage.type_name();
+            outcomes.push_back(json_error_(0, oss.str()));
+        }
+        else
         std::transform(
             jMessage.begin(),
             jMessage.end(),
