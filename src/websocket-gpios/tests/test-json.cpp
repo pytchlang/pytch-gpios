@@ -51,6 +51,18 @@ struct LoopbackJson
         require_ok(jReply[0], expected_seqnum);
     }
 
+    static void require_sole_report_input(
+        const json &jReply,
+        SeqNum expected_seqnum,
+        PinId expected_pin,
+        PinLevel expected_level)
+    {
+        REQUIRE(jReply.size() == 1);
+        require_report_input(
+            jReply[0],
+            expected_seqnum, expected_pin, expected_level);
+    }
+
     std::shared_ptr<IGpioArray> gpios;
     GpioJsonInterface interface;
 };
