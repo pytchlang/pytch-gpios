@@ -96,3 +96,13 @@ Outcome<void> PiGpioArray::set_output(PinId pin, PinLevel level)
 
     return Success<void>{};
 }
+
+Outcome<void> PiGpioArray::launch_input_monitor(PinLevelReportFun report_fun)
+{
+    // The input monitor thread is already running within pigpio.  We
+    // just need to remember the report-fun so we can call it when we
+    // are called by pigpio.
+
+    report_fun_ = report_fun;
+    return Success<void>{};
+}
