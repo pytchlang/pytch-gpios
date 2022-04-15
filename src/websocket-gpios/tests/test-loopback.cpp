@@ -4,6 +4,10 @@
 
 #include "../LoopbackGpioArray.h"
 
+#if ENABLE_PIGPIO
+#include "../PiGpioArray.h"
+#endif // ENABLE_PIGPIO
+
 #include "../vendor/catch2/catch.hpp"
 
 class InputRecorder
@@ -107,3 +111,15 @@ TEST_CASE("LoopbackGpioArray behaves")
     test_loopback(gpios, 4, 5);
     test_loopback(gpios, 5, 4);
 }
+
+#if ENABLE_PIGPIO
+
+TEST_CASE("PiGpioArray behaves")
+{
+    gpio_arrays.emplace_back(std::make_shared<PiGpioArray>());
+    auto &gpios(*gpio_arrays.back());
+    test_loopback(gpios, 4, 5);
+    test_loopback(gpios, 5, 4);
+}
+
+#endif // ENABLE_PIGPIO
