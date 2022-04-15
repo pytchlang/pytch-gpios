@@ -39,6 +39,14 @@ std::string GpioJsonInterface::do_commands(const std::string &message)
     return jOutcomes.dump();
 }
 
+std::string GpioJsonInterface::report_input_message(PinId pin, PinLevel level)
+{
+    // Seqnum is zero, the magic "unsolicited response" value.
+    const auto jResponse = json_report_input_(0, pin, level);
+    const nlohmann::json jMessage{jResponse};
+    return jMessage.dump();
+}
+
 nlohmann::json
 GpioJsonInterface::do_one_command_(const nlohmann::json &jCommand)
 {
