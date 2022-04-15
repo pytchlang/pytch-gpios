@@ -158,6 +158,27 @@ TEST_CASE("Multiple valid commands in one message")
     LoopbackJson::require_report_input(jResp[1], 1235, 5, 1);
 }
 
+TEST_CASE("Mixed-validity commands in one message")
+{
+    const auto jResp = LoopbackJson{}.do_commands(R"(
+        [{
+            "seqnum": 1234,
+            "kind": "set-output",
+            "pin": 4,
+            "level": 1
+        }, {
+            "seqnum": 1235,
+            "kind": "dance"
+        }, {
+            "kind": "reset"
+        }]
+    )");
+    REQUIRE(jResp.size() == 3);
+    LoopbackJson::require_ok(jResp[0], 1234);
+    LoopbackJson::require_error(jResp[1], 1235, "unknown command");
+    LoopbackJson::require_error(jResp[2], 0, "'seqnum' not found");
+}
+
 TEST_CASE("Multiple separate messages")
 {
     // Need same interface to maintain state between messages:
