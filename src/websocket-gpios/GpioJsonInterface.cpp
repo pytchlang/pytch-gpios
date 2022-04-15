@@ -68,3 +68,11 @@ GpioJsonInterface::do_one_command_(const nlohmann::json &jCommand)
         return json_error_(seqnum, err.what());
     }
 }
+
+nlohmann::json GpioJsonInterface::json_ok_(SeqNum seqnum)
+{
+    nlohmann::json jResponse;
+    jResponse["seqnum"] = seqnum;
+    jResponse["kind"] = "ok";
+    return jResponse;
+}

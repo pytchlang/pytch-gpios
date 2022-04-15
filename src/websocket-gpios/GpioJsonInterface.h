@@ -17,6 +17,8 @@ private:
     using json = nlohmann::json;
     json do_one_command_(const json &command);
 
+    static json json_ok_(SeqNum seqnum);
+
     std::shared_ptr<IGpioArray> gpios_;
 };
 
