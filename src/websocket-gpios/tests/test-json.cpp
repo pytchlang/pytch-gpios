@@ -93,3 +93,16 @@ TEST_CASE("Valid set-input command")
     )");
     LoopbackJson::require_sole_report_input(jResp, 1234, 5, 1);
 }
+
+TEST_CASE("Valid set-output command")
+{
+    const auto jResp = LoopbackJson{}.do_commands(R"(
+        [{
+            "seqnum": 1234,
+            "kind": "set-output",
+            "pin": 4,
+            "level": 1
+        }]
+    )");
+    LoopbackJson::require_sole_ok(jResp, 1234);
+}
