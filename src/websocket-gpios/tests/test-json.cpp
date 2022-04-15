@@ -32,6 +32,19 @@ struct LoopbackJson
         REQUIRE(jResp["kind"].get<std::string>() == "ok");
     }
 
+    static void require_report_input(
+        const json &jResp,
+        SeqNum expected_seqnum,
+        PinId expected_pin,
+        PinLevel expected_level)
+    {
+        REQUIRE(jResp.size() == 4);
+        REQUIRE(jResp["seqnum"].get<SeqNum>() == expected_seqnum);
+        REQUIRE(jResp["kind"].get<std::string>() == "report-input");
+        REQUIRE(jResp["pin"].get<PinId>() == expected_pin);
+        REQUIRE(jResp["level"].get<PinLevel>() == expected_level);
+    }
+
     static void require_sole_ok(const json &jReply, SeqNum expected_seqnum)
     {
         REQUIRE(jReply.size() == 1);
