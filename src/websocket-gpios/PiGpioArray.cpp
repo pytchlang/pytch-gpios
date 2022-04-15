@@ -107,6 +107,13 @@ Outcome<void> PiGpioArray::launch_input_monitor(PinLevelReportFun report_fun)
     return Success<void>{};
 }
 
+void PiGpioArray::dispatch_gpio_alert_(
+    int gpio, int level, uint32_t tick, void *closure)
+{
+    auto pigpio_gpio_array = static_cast<PiGpioArray *>(closure);
+    pigpio_gpio_array->handle_gpio_alert_(gpio, level, tick);
+}
+
 void PiGpioArray::handle_gpio_alert_(int gpio, int level, uint32_t /* tick */)
 {
     if (level == 2)

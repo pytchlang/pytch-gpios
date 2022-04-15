@@ -15,6 +15,8 @@ public:
     Outcome<void> launch_input_monitor(PinLevelReportFun report_fun) override;
 
 private:
+    static void
+    dispatch_gpio_alert_(int gpio, int level, uint32_t tick, void *closure);
     void handle_gpio_alert_(int gpio, int level, uint32_t tick);
 
     PinLevelReportFun report_fun_;
