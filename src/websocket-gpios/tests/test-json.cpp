@@ -47,3 +47,11 @@ TEST_CASE("Zero-length array of commands")
     const auto jResp = LoopbackJson{}.do_commands("[]");
     LoopbackJson::require_empty_array(jResp);
 }
+
+TEST_CASE("Valid reset command")
+{
+    const auto jResp = LoopbackJson{}.do_commands(R"(
+        [{"seqnum": 1234, "kind": "reset"}]
+    )");
+    LoopbackJson::require_sole_ok(jResp, 1234);
+}
