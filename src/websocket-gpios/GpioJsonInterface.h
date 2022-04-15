@@ -17,6 +17,8 @@ private:
     using json = nlohmann::json;
     json do_one_command_(const json &command);
 
+    json do_reset_(SeqNum seqnum);
+
     static json json_ok_(SeqNum seqnum);
     static json json_error_(SeqNum seqnum, const std::string &message);
 

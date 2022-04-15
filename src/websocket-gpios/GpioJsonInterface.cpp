@@ -69,6 +69,15 @@ GpioJsonInterface::do_one_command_(const nlohmann::json &jCommand)
     }
 }
 
+nlohmann::json GpioJsonInterface::do_reset_(SeqNum seqnum)
+{
+    const auto outcome = gpios_->reset();
+    if (std::holds_alternative<Success<void>>(outcome))
+        return json_ok_(seqnum);
+    else
+        return json_error_(seqnum, std::get<Failure>(outcome).message);
+}
+
 nlohmann::json GpioJsonInterface::json_ok_(SeqNum seqnum)
 {
     nlohmann::json jResponse;
