@@ -12,6 +12,14 @@ struct LoopbackJson
     {
     }
 
+    json do_commands(const std::string &message)
+    {
+        const auto reply = interface.do_commands(message);
+        const auto jReply = json::parse(reply);
+        REQUIRE(jReply.is_array());
+        return jReply;
+    }
+
     std::shared_ptr<IGpioArray> gpios;
     GpioJsonInterface interface;
 };
