@@ -228,3 +228,16 @@ TEST_CASE("Malformed message (wrong command type)")
         LoopbackJson::require_error(
             jReply, 0, "must be JSON object, but got number");
 }
+
+TEST_CASE("Malformed command (wrong field type)")
+{
+    auto jResp = LoopbackJson{}.do_commands(R"(
+        [{ "seqnum": true, "kind": "reset" }]
+    )");
+    LoopbackJson::require_sole_error(jResp, 0, "must be number");
+
+    jResp = LoopbackJson{}.do_commands(R"(
+        [{ "seqnum": 42, "kind": 43 }]
+    )");
+    LoopbackJson::require_sole_error(jResp, 42, "must be string");
+}
