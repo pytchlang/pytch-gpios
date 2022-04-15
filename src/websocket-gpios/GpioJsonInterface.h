@@ -15,6 +15,8 @@ public:
 
 private:
     using json = nlohmann::json;
+
+    std::shared_ptr<IGpioArray> gpios_;
 };
 
 #endif // WEBSOCKET_GPIOS_GPIOJSONINTERFACE_H_
