@@ -189,3 +189,16 @@ TEST_CASE("Malformed message (not JSON)")
     const auto jResp = LoopbackJson{}.do_commands("not-json-urgh");
     LoopbackJson::require_sole_error(jResp, 0, "could not parse");
 }
+
+TEST_CASE("Malformed command (missing field)")
+{
+    auto jResp = LoopbackJson{}.do_commands(R"(
+        [{ "kind": "reset" }]
+    )");
+    LoopbackJson::require_sole_error(jResp, 0, "'seqnum' not found");
+
+    jResp = LoopbackJson{}.do_commands(R"(
+        [{ "seqnum": 1234 }]
+    )");
+    LoopbackJson::require_sole_error(jResp, 1234, "'kind' not found");
+}
