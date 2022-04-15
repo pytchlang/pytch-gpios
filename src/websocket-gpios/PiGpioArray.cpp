@@ -106,3 +106,15 @@ Outcome<void> PiGpioArray::launch_input_monitor(PinLevelReportFun report_fun)
     report_fun_ = report_fun;
     return Success<void>{};
 }
+
+void PiGpioArray::handle_gpio_alert_(int gpio, int level, uint32_t /* tick */)
+{
+    if (level == 2)
+        // TODO: Say something about unexpected watchdog timeout?
+        return;
+
+    if (!report_fun_)
+        return;
+
+    report_fun_(gpio, level);
+}
