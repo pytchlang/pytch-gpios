@@ -277,3 +277,28 @@ TEST_CASE("Bad set-input command (invalid pin)")
     LoopbackJson::require_sole_error(
         jResp, 1234, "cannot use pin 55 as an input");
 }
+
+TEST_CASE("Bad set-output command (invalid field values)")
+{
+    auto jResp = LoopbackJson{}.do_commands(R"(
+        [{
+            "seqnum": 1234,
+            "kind": "set-output",
+            "pin": 555,
+            "level": 1
+        }]
+    )");
+    LoopbackJson::require_sole_error(
+        jResp, 1234, "cannot use pin 555 as an output");
+
+    jResp = LoopbackJson{}.do_commands(R"(
+        [{
+            "seqnum": 1234,
+            "kind": "set-output",
+            "pin": 5,
+            "level": 12
+        }]
+    )");
+    LoopbackJson::require_sole_error(
+        jResp, 1234, "cannot set pin 5 to bad level 12");
+}
