@@ -31,11 +31,11 @@ std::string GpioJsonInterface::do_commands(const std::string &message)
             outcomes.push_back(json_error_(0, oss.str()));
         }
         else
-        std::transform(
-            jMessage.begin(),
-            jMessage.end(),
-            std::back_inserter(outcomes),
-            std::bind(&GpioJsonInterface::do_one_command_, this, _1));
+            std::transform(
+                jMessage.begin(),
+                jMessage.end(),
+                std::back_inserter(outcomes),
+                std::bind(&GpioJsonInterface::do_one_command_, this, _1));
     }
     catch (const nlohmann::json::parse_error &err)
     {
