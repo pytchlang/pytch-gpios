@@ -241,3 +241,12 @@ TEST_CASE("Malformed command (wrong field type)")
     )");
     LoopbackJson::require_sole_error(jResp, 42, "must be string");
 }
+
+TEST_CASE("Unknown command")
+{
+    const auto jResp = LoopbackJson{}.do_commands(R"(
+        [{ "seqnum": 10101, "kind": "dance" }]
+    )");
+    JsonRequires::require_sole_error(
+        jResp, 10101, R"(unknown command "dance")");
+}
