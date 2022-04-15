@@ -183,3 +183,9 @@ TEST_CASE("Multiple separate messages")
     )");
     LoopbackJson::require_sole_report_input(jResp, 1235, 5, 1);
 }
+
+TEST_CASE("Malformed message (not JSON)")
+{
+    const auto jResp = LoopbackJson{}.do_commands("not-json-urgh");
+    LoopbackJson::require_sole_error(jResp, 0, "could not parse");
+}
