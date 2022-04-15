@@ -215,3 +215,16 @@ TEST_CASE("Malformed message (wrong top-level type)")
     LoopbackJson::require_sole_error(
         jResp, 0, "must be JSON array, but got number");
 }
+
+TEST_CASE("Malformed message (wrong command type)")
+{
+    auto jResp = LoopbackJson{}.do_commands("[[0, 1, 2, 3]]");
+    LoopbackJson::require_sole_error(
+        jResp, 0, "must be JSON object, but got array");
+
+    jResp = LoopbackJson{}.do_commands("[0, 1, 2, 3]");
+    REQUIRE(jResp.size() == 4);
+    for (const auto &jReply : jResp)
+        LoopbackJson::require_error(
+            jReply, 0, "must be JSON object, but got number");
+}
