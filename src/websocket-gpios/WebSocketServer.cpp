@@ -37,3 +37,11 @@ std::shared_ptr<IGpioArray> make_gpios(std::string kind)
 
     return nullptr;
 }
+
+int main(int argc, char *argv[])
+{
+    if (argc != 3)
+        return usage();
+
+    return EXIT_SUCCESS;
+}
