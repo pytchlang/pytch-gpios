@@ -76,5 +76,7 @@ int main(int argc, char *argv[])
             ioc.stop();
         });
 
+    ioc.run();
+
     return EXIT_SUCCESS;
 }
