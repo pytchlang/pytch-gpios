@@ -1,18 +1,18 @@
 #include "../GpioInterfaceBroker.h"
-#include "../MessageTransmitChannel.h"
 #include "../GpioJsonInterface.h"
 #include "../LoopbackGpioArray.h"
+#include "../MessageTransmitChannel.h"
 
 #include "../vendor/catch2/catch.hpp"
 
 #include "json-requires.h"
 
-#include <memory>
-#include <string>
-#include <vector>
-#include <mutex>
-#include <thread>
 #include <chrono>
+#include <memory>
+#include <mutex>
+#include <string>
+#include <thread>
+#include <vector>
 
 using json = nlohmann::json;
 
