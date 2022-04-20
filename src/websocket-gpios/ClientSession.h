@@ -2,14 +2,25 @@
 #define WEBSOCKET_GPIOS_CLIENTSESSION_H_
 
 #include <memory>
+#include <string>
+
+#include <boost/asio.hpp>
+#include <boost/beast/core.hpp>
+#include <boost/beast/websocket.hpp>
 
 #include "MessageTransmitChannel.h"
+
+class GpioInterfaceBroker;
 
 ////////////////////////////////////////////////////////////////////////////////
 
 class ClientSession : public std::enable_shared_from_this<ClientSession>,
                       public IMessageTransmitChannel
 {
+public:
+    explicit ClientSession(boost::asio::ip::tcp::socket &&socket);
+    void run(GpioInterfaceBroker *interface_broker);
+    void send(const std::shared_ptr<const std::string> msg) override;
 };
 
 #endif // WEBSOCKET_GPIOS_CLIENTSESSION_H_
