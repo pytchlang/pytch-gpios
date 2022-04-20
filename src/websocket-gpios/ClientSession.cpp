@@ -2,6 +2,7 @@
 
 #include "ClientSession.h"
 #include "GpioInterfaceBroker.h"
+#include "GpioJsonInterface.h"
 #include "bind-macro.h"
 #include "fail-if-error-macro.h"
 
@@ -48,4 +49,28 @@ void ClientSession::on_accept_(beast::error_code ec)
 void ClientSession::do_read_()
 {
     ws_.async_read(buffer_, BIND_FRONT_THIS(&ClientSession::on_read_));
+}
+
+void ClientSession::on_read_(
+    beast::error_code ec, std::size_t /* bytes_transferred */)
+{
+    // Bit rude if the client just drops the connection (eof / reset)
+    // but we shouldn't treat it as an error.
+    if (ec == websocket::error::closed || ec == net::error::eof
+        || ec == net::error::connection_reset)
+        return;
+
+    FAIL_AND_RETURN_IF_EC(ec, "read");
+
+    const auto message = beast::buffers_to_string(buffer_.data());
+    const auto message_out = json_interface_->do_commands(message);
+    send(std::make_shared<std::string>(message_out));
+
+    buffer_.consume(buffer_.size());
+
+    // TODO: For testing, allow a command which makes the server close
+    // the connection.  If such a command received, do not call
+    // do_read_() here.
+
+    do_read_();
 }
