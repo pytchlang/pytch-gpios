@@ -51,5 +51,10 @@ int main(int argc, char *argv[])
     auto const address = net::ip::make_address("0.0.0.0");
     auto const port = static_cast<unsigned short>(std::atoi(argv[1]));
 
+    std::string gpio_kind = argv[2];
+    auto gpios = make_gpios(gpio_kind);
+    if (gpios == nullptr)
+        return usage();
+
     return EXIT_SUCCESS;
 }
