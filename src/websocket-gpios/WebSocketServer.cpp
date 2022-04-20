@@ -6,6 +6,7 @@
 #include "GpioArray.h"
 #include "LoopbackGpioArray.h"
 #include "GpioInterfaceBroker.h"
+#include "WebSocketListener.h"
 
 #if ENABLE_PIGPIO
 #include "PiGpioArray.h"
@@ -14,6 +15,7 @@
 #include <boost/asio.hpp>
 
 namespace net = boost::asio;
+using tcp = net::ip::tcp;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -58,6 +60,11 @@ int main(int argc, char *argv[])
         return usage();
 
     GpioInterfaceBroker broker{gpios};
+
+    net::io_context ioc;
+    const tcp::endpoint tcp_endpoint{address, port};
+
+    std::make_shared<WebSocketListener>(&ioc, tcp_endpoint, &broker)->run();
 
     return EXIT_SUCCESS;
 }
