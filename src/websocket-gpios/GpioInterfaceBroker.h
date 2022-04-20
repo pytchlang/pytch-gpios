@@ -23,6 +23,7 @@ private:
 
     std::shared_ptr<IGpioArray> gpios_;
     std::mutex mutex_;
+    std::weak_ptr<IMessageTransmitChannel> active_transmit_channel_;
 };
 
 #endif // WEBSOCKET_GPIOS_GPIOINTERFACEBROKER_H
