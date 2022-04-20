@@ -74,3 +74,12 @@ void ClientSession::on_read_(
 
     do_read_();
 }
+
+void ClientSession::send(const std::shared_ptr<const std::string> message)
+{
+    // This send() method can be called from any thread.  Ensure the
+    // actual sending takes place on the correct strand.
+    net::post(
+        ws_.get_executor(),
+        BIND_FRONT_THIS_1(&ClientSession::on_send_, message));
+}
