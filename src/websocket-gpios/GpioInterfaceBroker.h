@@ -16,6 +16,9 @@ public:
 
     std::shared_ptr<GpioJsonInterface> issue_json_interface(
         std::shared_ptr<IMessageTransmitChannel> message_transmit_channel);
+
+private:
+    std::shared_ptr<IGpioArray> gpios_;
 };
 
 #endif // WEBSOCKET_GPIOS_GPIOINTERFACEBROKER_H
