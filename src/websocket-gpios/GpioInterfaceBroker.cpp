@@ -6,6 +6,7 @@
 #include "GpioJsonInterface.h"
 #include "MessageTransmitChannel.h"
 #include "GpioArray.h"
+#include "StubGpioArray.h"
 #include "Types.h"
 
 using namespace std::placeholders;
@@ -17,6 +18,25 @@ GpioInterfaceBroker::GpioInterfaceBroker(std::shared_ptr<IGpioArray> gpios)
 {
     gpios_->launch_input_monitor(
         std::bind(&GpioInterfaceBroker::maybe_send_pin_level_, this, _1, _2));
+}
+
+std::shared_ptr<GpioJsonInterface> GpioInterfaceBroker::issue_json_interface(
+    std::shared_ptr<IMessageTransmitChannel> message_transmit_channel)
+{
+    mutex_lock_t lock{mutex_};
+
+    bool real_array_available = (active_transmit_channel_.lock() == nullptr);
+
+    std::shared_ptr<IGpioArray> gpios;
+    if (real_array_available)
+    {
+        active_transmit_channel_ = message_transmit_channel;
+        gpios = gpios_;
+    }
+    else
+        gpios = std::make_shared<StubGpioArray>();
+
+    return std::make_shared<GpioJsonInterface>(gpios);
 }
 
 void GpioInterfaceBroker::maybe_send_pin_level_(PinId pin, PinLevel level)
