@@ -1,6 +1,6 @@
-#include <thread>
 #include <chrono>
 #include <mutex>
+#include <thread>
 
 #include "../LoopbackGpioArray.h"
 
