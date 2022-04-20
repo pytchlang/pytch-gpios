@@ -2,6 +2,7 @@
 #define WEBSOCKET_GPIOS_GPIOINTERFACEBROKER_H
 
 #include <memory>
+#include <mutex>
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -18,7 +19,10 @@ public:
         std::shared_ptr<IMessageTransmitChannel> message_transmit_channel);
 
 private:
+    using mutex_lock_t = std::lock_guard<std::mutex>;
+
     std::shared_ptr<IGpioArray> gpios_;
+    std::mutex mutex_;
 };
 
 #endif // WEBSOCKET_GPIOS_GPIOINTERFACEBROKER_H
