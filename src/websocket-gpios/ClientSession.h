@@ -21,6 +21,9 @@ public:
     explicit ClientSession(boost::asio::ip::tcp::socket &&socket);
     void run(GpioInterfaceBroker *interface_broker);
     void send(const std::shared_ptr<const std::string> msg) override;
+
+private:
+    boost::beast::websocket::stream<boost::beast::tcp_stream> ws_;
 };
 
 #endif // WEBSOCKET_GPIOS_CLIENTSESSION_H_
