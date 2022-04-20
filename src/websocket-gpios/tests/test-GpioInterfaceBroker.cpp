@@ -1,5 +1,6 @@
 #include "../GpioInterfaceBroker.h"
 #include "../MessageTransmitChannel.h"
+#include "../LoopbackGpioArray.h"
 
 #include "../vendor/catch2/catch.hpp"
 
@@ -21,6 +22,12 @@ struct RecordingMessageChannel : public IMessageTransmitChannel
     std::vector<std::string> messages;
 };
 
+// Allow this to be long-lived to avoid threads calling into
+// destroyed objects.
+static std::shared_ptr<IGpioArray> gpios;
+
 TEST_CASE("GpioInterfaceBroker")
 {
+    gpios = std::make_shared<LoopbackGpioArray>();
+    GpioInterfaceBroker broker{gpios};
 }
