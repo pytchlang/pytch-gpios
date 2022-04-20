@@ -20,6 +20,11 @@ public:
         GpioInterfaceBroker *interface_broker);
 
     void run();
+
+private:
+    boost::asio::io_context &ioc_;
+    boost::asio::ip::tcp::acceptor acceptor_;
+    GpioInterfaceBroker &interface_broker_;
 };
 
 #endif // WEBSOCKET_GPIOS_WEBSOCKETLISTENER_H_
