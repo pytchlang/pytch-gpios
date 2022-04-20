@@ -3,6 +3,8 @@
 
 #include "../vendor/catch2/catch.hpp"
 
+#include "json-requires.h"
+
 #include <regex>
 
 using json = nlohmann::json;
@@ -29,7 +31,7 @@ struct LoopbackJson
 TEST_CASE("Zero-length array of commands")
 {
     const auto jResp = LoopbackJson{}.do_commands("[]");
-    LoopbackJson::require_empty_array(jResp);
+    JsonRequires::require_empty_array(jResp);
 }
 
 TEST_CASE("Valid reset command")
@@ -37,7 +39,7 @@ TEST_CASE("Valid reset command")
     const auto jResp = LoopbackJson{}.do_commands(R"(
         [{"seqnum": 1234, "kind": "reset"}]
     )");
-    LoopbackJson::require_sole_ok(jResp, 1234);
+    JsonRequires::require_sole_ok(jResp, 1234);
 }
 
 TEST_CASE("Valid set-input command")
@@ -50,7 +52,7 @@ TEST_CASE("Valid set-input command")
             "pullKind": "pull-up"
         }]
     )");
-    LoopbackJson::require_sole_report_input(jResp, 1234, 5, 1);
+    JsonRequires::require_sole_report_input(jResp, 1234, 5, 1);
 }
 
 TEST_CASE("Valid set-output command")
@@ -63,7 +65,7 @@ TEST_CASE("Valid set-output command")
             "level": 1
         }]
     )");
-    LoopbackJson::require_sole_ok(jResp, 1234);
+    JsonRequires::require_sole_ok(jResp, 1234);
 }
 
 TEST_CASE("Multiple valid commands in one message")
@@ -82,8 +84,8 @@ TEST_CASE("Multiple valid commands in one message")
         }]
     )");
     REQUIRE(jResp.size() == 2);
-    LoopbackJson::require_ok(jResp[0], 1234);
-    LoopbackJson::require_report_input(jResp[1], 1235, 5, 1);
+    JsonRequires::require_ok(jResp[0], 1234);
+    JsonRequires::require_report_input(jResp[1], 1235, 5, 1);
 }
 
 TEST_CASE("Mixed-validity commands in one message")
@@ -102,9 +104,9 @@ TEST_CASE("Mixed-validity commands in one message")
         }]
     )");
     REQUIRE(jResp.size() == 3);
-    LoopbackJson::require_ok(jResp[0], 1234);
-    LoopbackJson::require_error(jResp[1], 1235, "unknown command");
-    LoopbackJson::require_error(jResp[2], 0, "'seqnum' not found");
+    JsonRequires::require_ok(jResp[0], 1234);
+    JsonRequires::require_error(jResp[1], 1235, "unknown command");
+    JsonRequires::require_error(jResp[2], 0, "'seqnum' not found");
 }
 
 TEST_CASE("Multiple separate messages")
@@ -120,7 +122,7 @@ TEST_CASE("Multiple separate messages")
             "level": 1
         }]
     )");
-    LoopbackJson::require_sole_ok(jResp, 1234);
+    JsonRequires::require_sole_ok(jResp, 1234);
 
     jResp = interface.do_commands(R"(
         [{
@@ -130,13 +132,13 @@ TEST_CASE("Multiple separate messages")
             "pullKind": "pull-down"
         }]
     )");
-    LoopbackJson::require_sole_report_input(jResp, 1235, 5, 1);
+    JsonRequires::require_sole_report_input(jResp, 1235, 5, 1);
 }
 
 TEST_CASE("Malformed message (not JSON)")
 {
     const auto jResp = LoopbackJson{}.do_commands("not-json-urgh");
-    LoopbackJson::require_sole_error(jResp, 0, "could not parse");
+    JsonRequires::require_sole_error(jResp, 0, "could not parse");
 }
 
 TEST_CASE("Malformed command (missing field)")
@@ -144,12 +146,12 @@ TEST_CASE("Malformed command (missing field)")
     auto jResp = LoopbackJson{}.do_commands(R"(
         [{ "kind": "reset" }]
     )");
-    LoopbackJson::require_sole_error(jResp, 0, "'seqnum' not found");
+    JsonRequires::require_sole_error(jResp, 0, "'seqnum' not found");
 
     jResp = LoopbackJson{}.do_commands(R"(
         [{ "seqnum": 1234 }]
     )");
-    LoopbackJson::require_sole_error(jResp, 1234, "'kind' not found");
+    JsonRequires::require_sole_error(jResp, 1234, "'kind' not found");
 }
 
 TEST_CASE("Malformed message (wrong top-level type)")
@@ -157,24 +159,24 @@ TEST_CASE("Malformed message (wrong top-level type)")
     auto jResp = LoopbackJson{}.do_commands(R"(
         { "seqnum": 1234, "kind": "reset" }
     )");
-    LoopbackJson::require_sole_error(
+    JsonRequires::require_sole_error(
         jResp, 0, "must be JSON array, but got object");
 
     jResp = LoopbackJson{}.do_commands("42");
-    LoopbackJson::require_sole_error(
+    JsonRequires::require_sole_error(
         jResp, 0, "must be JSON array, but got number");
 }
 
 TEST_CASE("Malformed message (wrong command type)")
 {
     auto jResp = LoopbackJson{}.do_commands("[[0, 1, 2, 3]]");
-    LoopbackJson::require_sole_error(
+    JsonRequires::require_sole_error(
         jResp, 0, "must be JSON object, but got array");
 
     jResp = LoopbackJson{}.do_commands("[0, 1, 2, 3]");
     REQUIRE(jResp.size() == 4);
     for (const auto &jReply : jResp)
-        LoopbackJson::require_error(
+        JsonRequires::require_error(
             jReply, 0, "must be JSON object, but got number");
 }
 
@@ -183,12 +185,12 @@ TEST_CASE("Malformed command (wrong field type)")
     auto jResp = LoopbackJson{}.do_commands(R"(
         [{ "seqnum": true, "kind": "reset" }]
     )");
-    LoopbackJson::require_sole_error(jResp, 0, "must be number");
+    JsonRequires::require_sole_error(jResp, 0, "must be number");
 
     jResp = LoopbackJson{}.do_commands(R"(
         [{ "seqnum": 42, "kind": 43 }]
     )");
-    LoopbackJson::require_sole_error(jResp, 42, "must be string");
+    JsonRequires::require_sole_error(jResp, 42, "must be string");
 }
 
 TEST_CASE("Unknown command")
@@ -210,7 +212,7 @@ TEST_CASE("Malformed set-input command (bad pullKind)")
             "pullKind": "sideways"
         }]
     )");
-    LoopbackJson::require_sole_error(jResp, 1234, "unknown pullKind");
+    JsonRequires::require_sole_error(jResp, 1234, "unknown pullKind");
 }
 
 TEST_CASE("Bad set-input command (invalid pin)")
@@ -223,7 +225,7 @@ TEST_CASE("Bad set-input command (invalid pin)")
             "pullKind": "no-pull"
         }]
     )");
-    LoopbackJson::require_sole_error(
+    JsonRequires::require_sole_error(
         jResp, 1234, "cannot use pin 55 as an input");
 }
 
@@ -237,7 +239,7 @@ TEST_CASE("Bad set-output command (invalid field values)")
             "level": 1
         }]
     )");
-    LoopbackJson::require_sole_error(
+    JsonRequires::require_sole_error(
         jResp, 1234, "cannot use pin 555 as an output");
 
     jResp = LoopbackJson{}.do_commands(R"(
@@ -248,7 +250,7 @@ TEST_CASE("Bad set-output command (invalid field values)")
             "level": 12
         }]
     )");
-    LoopbackJson::require_sole_error(
+    JsonRequires::require_sole_error(
         jResp, 1234, "cannot set pin 5 to bad level 12");
 }
 
@@ -256,5 +258,5 @@ TEST_CASE("Construct report-input message")
 {
     const auto reply = GpioJsonInterface::report_input_message(17, 1);
     const auto jReply = json::parse(reply);
-    LoopbackJson::require_sole_report_input(jReply, 0, 17, 1);
+    JsonRequires::require_sole_report_input(jReply, 0, 17, 1);
 }
