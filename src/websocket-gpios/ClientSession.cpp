@@ -83,3 +83,20 @@ void ClientSession::send(const std::shared_ptr<const std::string> message)
         ws_.get_executor(),
         BIND_FRONT_THIS_1(&ClientSession::on_send_, message));
 }
+
+void ClientSession::on_send_(std::shared_ptr<std::string const> const &message)
+{
+    if (!ws_.is_open())
+        return;
+
+    queue_.push_back(message);
+
+    // If an async_write() is already pending, leave this message in
+    // the queue ready for when current async_write() completes.
+    if (queue_.size() > 1)
+        return;
+
+    ws_.async_write(
+        net::buffer(*queue_.front()),
+        BIND_FRONT_THIS(&ClientSession::on_write_));
+}
