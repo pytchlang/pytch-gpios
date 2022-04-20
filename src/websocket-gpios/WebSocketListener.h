@@ -22,6 +22,7 @@ public:
     void run();
 
 private:
+    void do_accept_();
     boost::asio::io_context &ioc_;
     boost::asio::ip::tcp::acceptor acceptor_;
     GpioInterfaceBroker &interface_broker_;

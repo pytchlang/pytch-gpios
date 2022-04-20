@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "WebSocketListener.h"
+#include "bind-macro.h"
 #include "fail-if-error-macro.h"
 
 namespace beast = boost::beast; // from <boost/beast.hpp>
@@ -39,4 +40,12 @@ WebSocketListener::WebSocketListener(
 void WebSocketListener::run()
 {
     do_accept_();
+}
+
+void WebSocketListener::do_accept_()
+{
+    // The new connection gets its own strand
+    acceptor_.async_accept(
+        net::make_strand(ioc_),
+        BIND_FRONT_THIS(&WebSocketListener::on_accept_));
 }
