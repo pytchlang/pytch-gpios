@@ -25,6 +25,7 @@ public:
 
 private:
     void on_run_();
+    void on_accept_(boost::beast::error_code ec);
 
     boost::beast::websocket::stream<boost::beast::tcp_stream> ws_;
     std::shared_ptr<GpioJsonInterface> json_interface_;

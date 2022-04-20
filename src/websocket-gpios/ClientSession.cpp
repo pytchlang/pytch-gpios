@@ -3,6 +3,7 @@
 #include "ClientSession.h"
 #include "GpioInterfaceBroker.h"
 #include "bind-macro.h"
+#include "fail-if-error-macro.h"
 
 namespace beast = boost::beast;
 namespace websocket = beast::websocket;
@@ -36,4 +37,10 @@ void ClientSession::on_run_()
         websocket::stream_base::timeout::suggested(beast::role_type::server));
 
     ws_.async_accept(BIND_FRONT_THIS(&ClientSession::on_accept_));
+}
+
+void ClientSession::on_accept_(beast::error_code ec)
+{
+    FAIL_AND_RETURN_IF_EC(ec, "accept");
+    do_read_();
 }
