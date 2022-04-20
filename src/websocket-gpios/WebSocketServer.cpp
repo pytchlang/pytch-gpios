@@ -5,6 +5,7 @@
 
 #include "GpioArray.h"
 #include "LoopbackGpioArray.h"
+#include "GpioInterfaceBroker.h"
 
 #if ENABLE_PIGPIO
 #include "PiGpioArray.h"
@@ -55,6 +56,8 @@ int main(int argc, char *argv[])
     auto gpios = make_gpios(gpio_kind);
     if (gpios == nullptr)
         return usage();
+
+    GpioInterfaceBroker broker{gpios};
 
     return EXIT_SUCCESS;
 }
