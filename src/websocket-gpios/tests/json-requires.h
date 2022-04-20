@@ -64,10 +64,12 @@ struct JsonRequires
 
         std::regex expected_error_regex{expected_detail_regex_str};
         std::string detail = jResp["errorDetail"].get<std::string>();
-        INFO("errorDetail \""
-             << detail
-             << "\" should match regex \""
-             << expected_detail_regex_str << "\"");
+
+        std::ostringstream oss;
+        oss << "errorDetail \"" << detail << "\" should match regex \""
+            << expected_detail_regex_str << "\"";
+        INFO(oss.str());
+
         REQUIRE(std::regex_search(detail, expected_error_regex));
     }
 
