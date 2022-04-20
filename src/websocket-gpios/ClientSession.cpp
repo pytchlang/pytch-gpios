@@ -44,3 +44,8 @@ void ClientSession::on_accept_(beast::error_code ec)
     FAIL_AND_RETURN_IF_EC(ec, "accept");
     do_read_();
 }
+
+void ClientSession::do_read_()
+{
+    ws_.async_read(buffer_, BIND_FRONT_THIS(&ClientSession::on_read_));
+}
