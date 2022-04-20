@@ -29,6 +29,7 @@ private:
     void do_read_();
     void on_read_(boost::beast::error_code ec, std::size_t bytes_transferred);
     void on_send_(std::shared_ptr<std::string const> const &msg);
+    void on_write_(boost::beast::error_code ec, std::size_t bytes_transferred);
 
     boost::beast::websocket::stream<boost::beast::tcp_stream> ws_;
     boost::beast::flat_buffer buffer_;

@@ -100,3 +100,21 @@ void ClientSession::on_send_(std::shared_ptr<std::string const> const &message)
         net::buffer(*queue_.front()),
         BIND_FRONT_THIS(&ClientSession::on_write_));
 }
+
+void ClientSession::on_write_(
+    beast::error_code ec, std::size_t /* bytes_transferred */)
+{
+    // TODO(ben): Work out whether this can happen.
+    if (ec == websocket::error::closed)
+        return;
+
+    FAIL_AND_RETURN_IF_EC(ec, "write");
+
+    queue_.erase(queue_.begin());
+
+    // Send the next message, if any.
+    if (!queue_.empty())
+        ws_.async_write(
+            net::buffer(*queue_.front()),
+            BIND_FRONT_THIS(&ClientSession::on_write_));
+}
