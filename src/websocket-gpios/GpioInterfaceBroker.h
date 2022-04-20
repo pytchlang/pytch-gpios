@@ -4,6 +4,8 @@
 #include <memory>
 #include <mutex>
 
+#include "Types.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 
 class IGpioArray;
@@ -20,6 +22,10 @@ public:
 
 private:
     using mutex_lock_t = std::lock_guard<std::mutex>;
+
+    // If there is an active message-sink, send a message to that sink
+    // describing the pin level.  If no active message-sink, do nothing.
+    void maybe_send_pin_level_(PinId pin, PinLevel level);
 
     std::shared_ptr<IGpioArray> gpios_;
     std::mutex mutex_;
