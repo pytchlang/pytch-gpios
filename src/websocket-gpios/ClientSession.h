@@ -24,6 +24,8 @@ public:
     void send(const std::shared_ptr<const std::string> msg) override;
 
 private:
+    void on_run_();
+
     boost::beast::websocket::stream<boost::beast::tcp_stream> ws_;
     std::shared_ptr<GpioJsonInterface> json_interface_;
 };

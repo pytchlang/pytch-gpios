@@ -22,3 +22,11 @@ void ClientSession::run(GpioInterfaceBroker *interface_broker)
     // operations on the websocket I/O objects in this session.
     net::dispatch(ws_.get_executor(), BIND_FRONT_THIS(&ClientSession::on_run_));
 }
+
+void ClientSession::on_run_()
+{
+    ws_.set_option(
+        websocket::stream_base::timeout::suggested(beast::role_type::server));
+
+    ws_.async_accept(BIND_FRONT_THIS(&ClientSession::on_accept_));
+}
