@@ -11,6 +11,7 @@
 #include "MessageTransmitChannel.h"
 
 class GpioInterfaceBroker;
+class GpioJsonInterface;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -24,6 +25,7 @@ public:
 
 private:
     boost::beast::websocket::stream<boost::beast::tcp_stream> ws_;
+    std::shared_ptr<GpioJsonInterface> json_interface_;
 };
 
 #endif // WEBSOCKET_GPIOS_CLIENTSESSION_H_
