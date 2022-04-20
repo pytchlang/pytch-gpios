@@ -23,6 +23,9 @@ public:
 
 private:
     void do_accept_();
+    void on_accept_(
+        boost::beast::error_code ec, boost::asio::ip::tcp::socket socket);
+
     boost::asio::io_context &ioc_;
     boost::asio::ip::tcp::acceptor acceptor_;
     GpioInterfaceBroker &interface_broker_;

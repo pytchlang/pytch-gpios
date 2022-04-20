@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "ClientSession.h"
 #include "WebSocketListener.h"
 #include "bind-macro.h"
 #include "fail-if-error-macro.h"
@@ -48,4 +49,18 @@ void WebSocketListener::do_accept_()
     acceptor_.async_accept(
         net::make_strand(ioc_),
         BIND_FRONT_THIS(&WebSocketListener::on_accept_));
+}
+
+void WebSocketListener::on_accept_(
+    beast::error_code ec, boost::asio::ip::tcp::socket socket)
+{
+    if (ec)
+        fail(ec, "accept");
+    else
+    {
+        auto session = std::make_shared<ClientSession>(std::move(socket));
+        session->run(&interface_broker_);
+    }
+
+    do_accept_();
 }
