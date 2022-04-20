@@ -1,6 +1,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <cstdlib>
 
 #include "GpioArray.h"
 #include "LoopbackGpioArray.h"
@@ -8,6 +9,10 @@
 #if ENABLE_PIGPIO
 #include "PiGpioArray.h"
 #endif
+
+#include <boost/asio.hpp>
+
+namespace net = boost::asio;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -42,6 +47,9 @@ int main(int argc, char *argv[])
 {
     if (argc != 3)
         return usage();
+
+    auto const address = net::ip::make_address("0.0.0.0");
+    auto const port = static_cast<unsigned short>(std::atoi(argv[1]));
 
     return EXIT_SUCCESS;
 }
