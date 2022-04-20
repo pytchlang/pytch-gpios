@@ -70,6 +70,26 @@ TEST_CASE("GpioInterfaceBroker")
     JsonRequires::require_sole_error(
         json::parse(reply), 1234, "already in use");
 
+    // Wait for initial input-level reports to come in.
+    recorder->poll_until_n_messages(2);
+
+    // We should get two more reports when we make a change:
+    gpios->set_as_input(4, PullKind::PULL_UP);
+    recorder->poll_until_n_messages(4);
+
+    // And only one more (because pin 5 no longer an input) when we
+    // change pin 5 to an output:
+    gpios->set_output(5, 0);
+    recorder->poll_until_n_messages(5);
+
+    // The following test for the content of the input-level reports is
+    // fragile.  It relies on the fact that we're given report-input
+    // messages in order of pin id.
+    JsonRequires::require_sole_report_input(
+        json::parse(recorder->messages[2]), 0, 4, 1);
+    JsonRequires::require_sole_report_input(
+        json::parse(recorder->messages[4]), 0, 4, 0);
+
     // Assigning a fresh shared-ptr to "recorder" should destroy the
     // existing RecordingMessageChannel, meaning that the broker should
     // let us get a new non-stub interface.
