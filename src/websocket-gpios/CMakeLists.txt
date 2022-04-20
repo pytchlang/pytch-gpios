@@ -38,6 +38,7 @@ add_library(websocketgpios
   GpioJsonInterface.cpp
   GpioInterfaceBroker.cpp
   ClientSession.cpp
+  WebSocketListener.cpp
   ${RPI_SOURCES}
 )
 
