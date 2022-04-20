@@ -11,6 +11,8 @@
 #include <string>
 #include <vector>
 #include <mutex>
+#include <thread>
+#include <chrono>
 
 using json = nlohmann::json;
 
@@ -20,6 +22,23 @@ struct RecordingMessageChannel : public IMessageTransmitChannel
     {
         mutex_lock_t lock{mutex_};
         messages.push_back(*message);
+    }
+
+    void poll_until_n_messages(size_t n_messages)
+    {
+        size_t got_n_messages;
+        for (int i = 0; i != 100; ++i)
+        {
+            {
+                mutex_lock_t lock{mutex_};
+                got_n_messages = messages.size();
+                if (got_n_messages == n_messages)
+                    break;
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
+
+        REQUIRE(got_n_messages == n_messages);
     }
 
     using mutex_lock_t = std::lock_guard<std::mutex>;
