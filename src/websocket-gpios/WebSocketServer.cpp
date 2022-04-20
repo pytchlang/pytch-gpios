@@ -66,5 +66,15 @@ int main(int argc, char *argv[])
 
     std::make_shared<WebSocketListener>(&ioc, tcp_endpoint, &broker)->run();
 
+    net::signal_set signals(ioc, SIGINT, SIGTERM);
+    signals.async_wait(
+        [&ioc](boost::system::error_code const &, int)
+        {
+            // Stop the io_context. This will cause run() to return
+            // immediately, eventually destroying the io_context and
+            // any remaining handlers in it.
+            ioc.stop();
+        });
+
     return EXIT_SUCCESS;
 }
