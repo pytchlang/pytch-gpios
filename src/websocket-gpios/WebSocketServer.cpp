@@ -1,11 +1,11 @@
+#include <cstdlib>
 #include <iostream>
 #include <memory>
 #include <string>
-#include <cstdlib>
 
 #include "GpioArray.h"
-#include "LoopbackGpioArray.h"
 #include "GpioInterfaceBroker.h"
+#include "LoopbackGpioArray.h"
 #include "WebSocketListener.h"
 
 #if ENABLE_PIGPIO
