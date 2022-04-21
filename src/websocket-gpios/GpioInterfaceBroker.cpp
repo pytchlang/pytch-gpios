@@ -1,11 +1,11 @@
 #include <functional>
-#include <utility>
 #include <memory>
+#include <utility>
 
+#include "GpioArray.h"
 #include "GpioInterfaceBroker.h"
 #include "GpioJsonInterface.h"
 #include "MessageTransmitChannel.h"
-#include "GpioArray.h"
 #include "StubGpioArray.h"
 #include "Types.h"
 
