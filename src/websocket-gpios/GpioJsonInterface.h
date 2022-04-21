@@ -1,10 +1,10 @@
 #ifndef WEBSOCKET_GPIOS_GPIOJSONINTERFACE_H_
 #define WEBSOCKET_GPIOS_GPIOJSONINTERFACE_H_
 
-#include <memory>
-#include <string>
 #include "GpioArray.h"
 #include "vendor/nlohmann/json.hpp"
+#include <memory>
+#include <string>
 
 class GpioJsonInterface
 {
