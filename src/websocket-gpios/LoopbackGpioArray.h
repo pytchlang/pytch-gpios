@@ -1,8 +1,8 @@
 #ifndef WEBSOCKET_GPIOS_LOOPBACKGPIOARRAY_H_
 #define WEBSOCKET_GPIOS_LOOPBACKGPIOARRAY_H_
 
-#include <mutex>
 #include <chrono>
+#include <mutex>
 
 #include "GpioArray.h"
 

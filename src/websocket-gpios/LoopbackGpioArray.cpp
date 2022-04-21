@@ -1,7 +1,7 @@
-#include <stdexcept>
-#include <sstream>
-#include <functional>
 #include <cassert>
+#include <functional>
+#include <sstream>
+#include <stdexcept>
 #include <thread>
 
 #include "LoopbackGpioArray.h"
