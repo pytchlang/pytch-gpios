@@ -13,6 +13,7 @@
 #endif
 
 #include <boost/asio.hpp>
+#include <boost/log/trivial.hpp>
 
 namespace net = boost::asio;
 using tcp = net::ip::tcp;
@@ -48,6 +49,8 @@ std::shared_ptr<IGpioArray> make_gpios(std::string kind)
 
 int main(int argc, char *argv[])
 {
+    BOOST_LOG_TRIVIAL(info) << "starting";
+
     if (argc != 3)
         return usage();
 
