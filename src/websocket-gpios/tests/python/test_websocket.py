@@ -58,3 +58,42 @@ async def test_reset(reset_message_str):
         await ws.send(reset_message_str)
         reply_obj = (await collect_replies(ws, 1))[0]
         assert_sole_ok(reply_obj, 1234)
+
+
+@pytest.mark.asyncio
+async def test_exactly_one_connection_succeeds(reset_message_str):
+    n_clients = 4
+    connections = [
+        websockets.connect("ws://localhost:8055/")
+        for _ in range(n_clients)
+    ]
+    clients = await asyncio.gather(*connections)
+
+    await asyncio.gather(*[c.send(reset_message_str) for c in clients])
+
+    reply_objs = [
+        (await collect_replies(c, 1, keep_unsolicited=False))[0]
+        for c in clients
+    ]
+
+    ok_idxs = [
+        i for (i, r) in enumerate(reply_objs) if r[0]["kind"] == "ok"
+    ]
+    assert len(ok_idxs) == 1
+
+    n_errors = sum(1 for r in reply_objs if r[0]["kind"] == "error")
+    assert n_errors == n_clients - 1
+
+    # If we close the successful client, we should be able to
+    # get a new real connection.
+
+    await clients[ok_idxs[0]].close()
+    del clients[ok_idxs[0]]
+
+    new_client = await websockets.connect("ws://localhost:8055/")
+    clients.append(new_client)
+    await new_client.send(reset_message_str)
+    reply_obj = (await collect_replies(new_client, 1))[0]
+    assert_sole_ok(reply_obj, 1234)
+
+    await asyncio.gather(*[c.close() for c in clients])
