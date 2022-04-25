@@ -23,3 +23,9 @@ StubGpioArray::launch_input_monitor(PinLevelReportFun /* report_fun */)
 {
     return FailureOutcome_;
 }
+
+const std::string &StubGpioArray::kind() const
+{
+    static const std::string kind = "stub";
+    return kind;
+}
