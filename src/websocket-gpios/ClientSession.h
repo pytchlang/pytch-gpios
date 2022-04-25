@@ -1,6 +1,7 @@
 #ifndef WEBSOCKET_GPIOS_CLIENTSESSION_H_
 #define WEBSOCKET_GPIOS_CLIENTSESSION_H_
 
+#include <atomic>
 #include <memory>
 #include <string>
 
@@ -38,6 +39,7 @@ private:
     std::shared_ptr<GpioJsonInterface> json_interface_;
 
     uint32_t client_id_;
+    static std::atomic_uint32_t next_client_id_;
 };
 
 #endif // WEBSOCKET_GPIOS_CLIENTSESSION_H_
