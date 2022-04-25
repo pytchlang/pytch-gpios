@@ -74,6 +74,9 @@ void ClientSession::on_read_(
 
     const auto message = beast::buffers_to_string(buffer_.data());
     const auto message_out = json_interface_->do_commands(message);
+
+    BOOST_LOG_TRIVIAL(info) << "got " << message;
+
     send(std::make_shared<std::string>(message_out));
 
     buffer_.consume(buffer_.size());
@@ -87,6 +90,8 @@ void ClientSession::on_read_(
 
 void ClientSession::send(const std::shared_ptr<const std::string> message)
 {
+    BOOST_LOG_TRIVIAL(info) << "sending " << *message;
+
     // This send() method can be called from any thread.  Ensure the
     // actual sending takes place on the correct strand.
     net::post(
