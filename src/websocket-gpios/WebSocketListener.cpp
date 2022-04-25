@@ -47,6 +47,7 @@ Outcome<void> WebSocketListener::run()
 {
     if (!setup_succeeded_)
     {
+        BOOST_LOG_TRIVIAL(error) << "cannot run() owing to failed set-up";
         return Failure{"set-up failed"};
     }
 
