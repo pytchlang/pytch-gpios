@@ -23,7 +23,7 @@ static void fail(beast::error_code ec, char const *what)
 std::atomic_uint32_t ClientSession::next_client_id_{5001};
 
 ClientSession::ClientSession(net::ip::tcp::socket &&socket)
-    : ws_(std::move(socket))
+    : ws_(std::move(socket)), client_id_(next_client_id_.fetch_add(1))
 {
 }
 
