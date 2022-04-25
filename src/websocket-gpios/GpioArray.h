@@ -2,6 +2,7 @@
 #define WEBSOCKET_GPIOS_GPIOARRAY_H_
 
 #include <cstdint>
+#include <string>
 
 #include "Types.h"
 
@@ -16,6 +17,8 @@ struct IGpioArray
     virtual Outcome<void> set_output(PinId pin, PinLevel level) = 0;
 
     virtual Outcome<void> launch_input_monitor(PinLevelReportFun report) = 0;
+
+    virtual const std::string &kind() const = 0;
 };
 
 #endif // WEBSOCKET_GPIOS_GPIOARRAY_H_
