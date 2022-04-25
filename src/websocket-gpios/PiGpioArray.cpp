@@ -125,3 +125,9 @@ void PiGpioArray::handle_gpio_alert_(int gpio, int level, uint32_t /* tick */)
 
     report_fun_(gpio, level);
 }
+
+const std::string &PiGpioArray::kind() const
+{
+    static const std::string kind = "pigpio";
+    return kind;
+}
