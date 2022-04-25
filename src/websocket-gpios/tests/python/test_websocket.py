@@ -1,4 +1,7 @@
+import websockets
 import json
+
+import pytest
 
 
 def set_input_message_str(seqnum, pin, pull_kind):
@@ -19,3 +22,9 @@ def set_output_message_str(seqnum, pin, level):
         "level": level,
     }
     return json.dumps([command])
+
+
+@pytest.mark.asyncio
+async def test_connection():
+    async with websockets.connect("ws://localhost:8055/") as ws:
+        pass
