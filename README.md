@@ -66,6 +66,58 @@ The async nature of the test means that test failures produce verbose
 and not particularly helpful messages.
 
 
+## Running
+
+Currently this is "developer preview" status, so requires some set-up.
+
+The main development Pytch site runs on the developer's machine.  The
+GPIO interface runs on a Raspberry Pi.  The Pytch webapp uses some
+features which are only available in a secure context, so the
+websocket for GPIO control has to be `localhost` too.  This is
+achieved with ssh port-forwarding.
+
+* In `pytch-vm` repo, check out the `gpios-1` branch and build that
+  with `npm run build`.
+* In `pytch-webapp`, check out the `rpi-gpios-1` branch.  This looks
+  for a websocket server on `localhost:8055`.
+* Connect from the development machine to the Raspberry Pi via ssh,
+  setting up a port-forward.  E.g., `ssh -L 8055:localhost:8055
+  pi@rpi-pytch`.
+* On the RPi, build the `websocket-gpio-server` with PiGpio enabled
+  (see §"Building on the Raspberry Pi") and run it with `sudo
+  ./websocket-gpio-server 8055 pigpio`.  The `sudo` is needed to
+  access the GPIOs.
+
+In a separate terminal, run the usual development server script, i.e.,
+within `pytch-build/makesite/local-server` run `./dev-server.sh`.
+
+Connect an LED and a 220R resistor in series between GPIO18 and GND of
+the RPi, and a pushbutton between GPIO23 and GND.  Then a Pytch
+program like
+
+``` python
+import pytch
+
+class DoubleSnake(pytch.Sprite):
+    Costumes = ["python-logo.png"]
+
+    @pytch.when_this_sprite_clicked
+    def flash_light(self):
+        pytch.set_gpio_output(18, 1)
+        pytch.wait_seconds(1.0)
+        pytch.set_gpio_output(18, 0)
+
+    @pytch.when_green_flag_clicked
+    def adjust_size(self):
+        pytch.set_gpio_as_input(23, "pull-up")
+        while True:
+            button_pressed = (pytch.get_gpio_value(23) == 0)
+            self.set_size(2.0 if button_pressed else 1.0)
+```
+
+should then let you blink the LED by clicking on the sprite, and
+control the size of the sprite with the pushbutton.
+
 ## Design overview
 
 ### IGpioArray: Interface for control of GPIOs
