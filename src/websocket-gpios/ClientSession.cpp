@@ -29,7 +29,7 @@ ClientSession::ClientSession(net::ip::tcp::socket &&socket)
 
 ClientSession::~ClientSession()
 {
-    BOOST_LOG_TRIVIAL(info) << "finishing";
+    BOOST_LOG_TRIVIAL(info) << "#" << client_id_ << " finishing";
 }
 
 void ClientSession::run(GpioInterfaceBroker *interface_broker)
@@ -37,8 +37,9 @@ void ClientSession::run(GpioInterfaceBroker *interface_broker)
     json_interface_
         = interface_broker->issue_json_interface(shared_from_this());
 
-    BOOST_LOG_TRIVIAL(info) << "starting client session with "
-                            << json_interface_->gpios_kind() << " GPIOs";
+    BOOST_LOG_TRIVIAL(info)
+        << "#" << client_id_ << " starting client session with "
+        << json_interface_->gpios_kind() << " GPIOs";
 
     // We need to be executing within a strand to perform async
     // operations on the websocket I/O objects in this session.
@@ -78,7 +79,7 @@ void ClientSession::on_read_(
     const auto message = beast::buffers_to_string(buffer_.data());
     const auto message_out = json_interface_->do_commands(message);
 
-    BOOST_LOG_TRIVIAL(info) << "got " << message;
+    BOOST_LOG_TRIVIAL(info) << "#" << client_id_ << " got " << message;
 
     send(std::make_shared<std::string>(message_out));
 
@@ -93,7 +94,7 @@ void ClientSession::on_read_(
 
 void ClientSession::send(const std::shared_ptr<const std::string> message)
 {
-    BOOST_LOG_TRIVIAL(info) << "sending " << *message;
+    BOOST_LOG_TRIVIAL(info) << "#" << client_id_ << " sending " << *message;
 
     // This send() method can be called from any thread.  Ensure the
     // actual sending takes place on the correct strand.
