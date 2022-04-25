@@ -1,2 +1,3 @@
 /src/websocket-gpios/build/
 /venv/
+__pycache__/
