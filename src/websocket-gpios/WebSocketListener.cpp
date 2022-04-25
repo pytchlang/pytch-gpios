@@ -38,6 +38,9 @@ WebSocketListener::WebSocketListener(
 
     acceptor_.listen(net::socket_base::max_listen_connections, ec);
     FAIL_AND_RETURN_IF_EC(ec, "listen");
+
+    // If we get to this point then all the above succeeded.
+    setup_succeeded_ = true;
 }
 
 void WebSocketListener::run()
