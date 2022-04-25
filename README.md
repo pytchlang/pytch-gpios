@@ -173,6 +173,7 @@ while (true) {
     reponse = json_interface_->do_commands(message);
     ws.send(response);
 }
+```
 
 This omits ensuring operations happen on the right thread, JSON
 parsing, error handling, shared-pointer details, etc.; for details see
