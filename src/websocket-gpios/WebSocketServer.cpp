@@ -2,6 +2,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <variant>
 
 #include "GpioArray.h"
 #include "GpioInterfaceBroker.h"
@@ -67,7 +68,12 @@ int main(int argc, char *argv[])
     net::io_context ioc;
     const tcp::endpoint tcp_endpoint{address, port};
 
-    std::make_shared<WebSocketListener>(&ioc, tcp_endpoint, &broker)->run();
+    auto run_outcome
+        = std::make_shared<WebSocketListener>(&ioc, tcp_endpoint, &broker)
+              ->run();
+
+    if (std::holds_alternative<Failure>(run_outcome))
+        return EXIT_FAILURE;
 
     net::signal_set signals(ioc, SIGINT, SIGTERM);
     signals.async_wait(
