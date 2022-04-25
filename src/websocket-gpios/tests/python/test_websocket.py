@@ -28,3 +28,11 @@ def set_output_message_str(seqnum, pin, level):
 async def test_connection():
     async with websockets.connect("ws://localhost:8055/") as ws:
         pass
+
+
+def assert_sole_ok(reply_obj, exp_seqnum):
+    assert isinstance(reply_obj, list)
+    assert len(reply_obj) == 1
+    response_obj = reply_obj[0]
+    assert response_obj["seqnum"] == exp_seqnum
+    assert response_obj["kind"] == "ok"
