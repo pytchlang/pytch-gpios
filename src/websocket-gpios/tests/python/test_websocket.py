@@ -105,3 +105,16 @@ def assert_contains_once(replies, seqnum, kind):
         1 for m in msgs if m["seqnum"] == seqnum and m["kind"] == kind
     )
     assert n_matching == 1, f"no match for {seqnum}/{kind}"
+
+
+def assert_levels_reported(replies, specs):
+    """Assert that the given pins are known to have the given
+    levels after processing all replies in order; spec is a list of
+    (pin, level) pairs."""
+    level_from_pin = {}
+    for reply in replies:
+        for msg in reply:
+            if msg["kind"] == "report-input":
+                level_from_pin[msg["pin"]] = msg["level"]
+    for pin, lvl in specs:
+        assert level_from_pin.get(pin) == lvl
