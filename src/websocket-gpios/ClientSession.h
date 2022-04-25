@@ -20,6 +20,7 @@ class ClientSession : public std::enable_shared_from_this<ClientSession>,
 {
 public:
     explicit ClientSession(boost::asio::ip::tcp::socket &&socket);
+    virtual ~ClientSession();
     void run(GpioInterfaceBroker *interface_broker);
     void send(const std::shared_ptr<const std::string> msg) override;
 

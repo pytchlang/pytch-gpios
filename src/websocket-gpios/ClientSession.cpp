@@ -24,6 +24,11 @@ ClientSession::ClientSession(net::ip::tcp::socket &&socket)
 {
 }
 
+ClientSession::~ClientSession()
+{
+    BOOST_LOG_TRIVIAL(info) << "finishing";
+}
+
 void ClientSession::run(GpioInterfaceBroker *interface_broker)
 {
     json_interface_
