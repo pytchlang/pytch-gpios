@@ -36,3 +36,11 @@ def assert_sole_ok(reply_obj, exp_seqnum):
     response_obj = reply_obj[0]
     assert response_obj["seqnum"] == exp_seqnum
     assert response_obj["kind"] == "ok"
+
+
+@pytest.mark.asyncio
+async def test_reset(reset_message_str):
+    async with websockets.connect("ws://localhost:8055/") as ws:
+        await ws.send(reset_message_str)
+        reply_obj = (await collect_replies(ws, 1))[0]
+        assert_sole_ok(reply_obj, 1234)
