@@ -58,6 +58,11 @@ std::string GpioJsonInterface::report_input_message(PinId pin, PinLevel level)
     return jMessage.dump();
 }
 
+const std::string &GpioJsonInterface::gpios_kind() const
+{
+    return gpios_->kind();
+}
+
 nlohmann::json
 GpioJsonInterface::do_one_command_(const nlohmann::json &jCommand)
 {
