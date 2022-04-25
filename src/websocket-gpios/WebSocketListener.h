@@ -7,6 +7,8 @@
 #include <boost/beast/core.hpp>
 #include <boost/beast/websocket.hpp>
 
+#include "Types.h"
+
 class GpioInterfaceBroker;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -19,7 +21,7 @@ public:
         boost::asio::ip::tcp::endpoint endpoint,
         GpioInterfaceBroker *interface_broker);
 
-    void run();
+    Outcome<void> run();
 
 private:
     void do_accept_();

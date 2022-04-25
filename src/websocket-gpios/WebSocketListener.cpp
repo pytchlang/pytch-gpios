@@ -43,9 +43,15 @@ WebSocketListener::WebSocketListener(
     setup_succeeded_ = true;
 }
 
-void WebSocketListener::run()
+Outcome<void> WebSocketListener::run()
 {
+    if (!setup_succeeded_)
+    {
+        return Failure{"set-up failed"};
+    }
+
     do_accept_();
+    return Success<void>{};
 }
 
 void WebSocketListener::do_accept_()
