@@ -16,6 +16,7 @@ public:
     Outcome<PinLevel> set_as_input(PinId pin, PullKind pull_kind) override;
     Outcome<void> set_output(PinId pin, PinLevel level) override;
     Outcome<void> launch_input_monitor(PinLevelReportFun report_fun) override;
+    const std::string &kind() const override;
 
 private:
     using mutex_lock_t = std::lock_guard<std::mutex>;

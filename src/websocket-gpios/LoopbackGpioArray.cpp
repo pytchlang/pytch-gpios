@@ -192,3 +192,9 @@ void LoopbackGpioArray::run_input_monitor_()
         std::this_thread::sleep_for(Poll_Interval_);
     }
 }
+
+const std::string &LoopbackGpioArray::kind() const
+{
+    static const std::string kind = "loopback";
+    return kind;
+}
