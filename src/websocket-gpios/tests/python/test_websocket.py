@@ -97,3 +97,11 @@ async def test_exactly_one_connection_succeeds(reset_message_str):
     assert_sole_ok(reply_obj, 1234)
 
     await asyncio.gather(*[c.close() for c in clients])
+
+
+def assert_contains_once(replies, seqnum, kind):
+    msgs = reduce(concat, replies, [])
+    n_matching = sum(
+        1 for m in msgs if m["seqnum"] == seqnum and m["kind"] == kind
+    )
+    assert n_matching == 1, f"no match for {seqnum}/{kind}"
