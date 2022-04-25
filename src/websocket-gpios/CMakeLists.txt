@@ -8,6 +8,14 @@ set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 find_package(Threads REQUIRED)
 
+
+########################################################################
+#
+# Logging
+
+add_definitions(-DBOOST_LOG_DYN_LINK)
+find_package(Boost COMPONENTS log REQUIRED)
+
 ########################################################################
 #
 # Determine whether to include code for driving actual RPi hardware.
@@ -43,7 +51,7 @@ add_library(websocketgpios
 )
 
 target_link_libraries(websocketgpios
-  PUBLIC Threads::Threads ${RPI_LIBRARIES}
+  PUBLIC Threads::Threads Boost::log ${RPI_LIBRARIES}
 )
 target_compile_features(websocketgpios PUBLIC cxx_std_17)
 
