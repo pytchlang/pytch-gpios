@@ -118,3 +118,29 @@ def assert_levels_reported(replies, specs):
                 level_from_pin[msg["pin"]] = msg["level"]
     for pin, lvl in specs:
         assert level_from_pin.get(pin) == lvl
+
+
+@pytest.mark.asyncio
+async def test_receive_input_reports(reset_message_str):
+    async with websockets.connect("ws://localhost:8055/") as client:
+        await client.send(reset_message_str)
+        await collect_replies(client, 1)
+
+        await client.send(set_input_message_str(1501, 4, "pull-down"))
+        replies = await collect_replies(
+            client, 3, keep_unsolicited=True
+        )
+        await client.send(set_input_message_str(1502, 5, "pull-up"))
+        replies.extend(
+            await collect_replies(client, 3, keep_unsolicited=True)
+        )
+        assert_contains_once(replies, 1501, "report-input")
+        assert_contains_once(replies, 1502, "report-input")
+        assert_levels_reported(replies, [(4, 0), (5, 1)])
+
+        await client.send(set_output_message_str(1503, 5, 0))
+        replies = await collect_replies(
+            client, 2, keep_unsolicited=True
+        )
+        assert_contains_once(replies, 1503, "ok")
+        assert_levels_reported(replies, [(4, 0)])
