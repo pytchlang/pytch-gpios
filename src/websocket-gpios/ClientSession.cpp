@@ -29,6 +29,9 @@ void ClientSession::run(GpioInterfaceBroker *interface_broker)
     json_interface_
         = interface_broker->issue_json_interface(shared_from_this());
 
+    BOOST_LOG_TRIVIAL(info) << "starting client session with "
+                            << json_interface_->gpios_kind() << " GPIOs";
+
     // We need to be executing within a strand to perform async
     // operations on the websocket I/O objects in this session.
     net::dispatch(ws_.get_executor(), BIND_FRONT_THIS(&ClientSession::on_run_));
