@@ -36,6 +36,8 @@ private:
     boost::beast::flat_buffer buffer_;
     std::vector<std::shared_ptr<std::string const>> queue_;
     std::shared_ptr<GpioJsonInterface> json_interface_;
+
+    uint32_t client_id_;
 };
 
 #endif // WEBSOCKET_GPIOS_CLIENTSESSION_H_
