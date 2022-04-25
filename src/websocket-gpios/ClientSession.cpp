@@ -6,6 +6,8 @@
 #include "bind-macro.h"
 #include "fail-if-error-macro.h"
 
+#include <boost/log/trivial.hpp>
+
 namespace beast = boost::beast;
 namespace websocket = beast::websocket;
 namespace net = boost::asio;
@@ -14,7 +16,7 @@ namespace net = boost::asio;
 
 static void fail(beast::error_code ec, char const *what)
 {
-    std::cerr << what << ": " << ec.message() << "\n";
+    BOOST_LOG_TRIVIAL(error) << what << ": " << ec.message();
 }
 
 ClientSession::ClientSession(net::ip::tcp::socket &&socket)

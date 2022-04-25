@@ -5,6 +5,8 @@
 #include "bind-macro.h"
 #include "fail-if-error-macro.h"
 
+#include <boost/log/trivial.hpp>
+
 namespace beast = boost::beast; // from <boost/beast.hpp>
 namespace net = boost::asio;    // from <boost/asio.hpp>
 
@@ -12,7 +14,7 @@ namespace net = boost::asio;    // from <boost/asio.hpp>
 
 static void fail(beast::error_code ec, char const *what)
 {
-    std::cerr << what << ": " << ec.message() << "\n";
+    BOOST_LOG_TRIVIAL(error) << what << ": " << ec.message();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
