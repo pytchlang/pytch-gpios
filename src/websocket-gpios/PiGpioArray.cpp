@@ -58,6 +58,7 @@ Outcome<PinLevel> PiGpioArray::set_as_input(PinId pin, PullKind pull_kind)
     // TODO: Reject reserved pins 0, 1, >27.
 
     gpioSetMode(pin, PI_INPUT);
+    gpioGlitchFilter(pin, 1200);
 
     unsigned pull_up_down;
     switch (pull_kind)
@@ -78,8 +79,6 @@ Outcome<PinLevel> PiGpioArray::set_as_input(PinId pin, PullKind pull_kind)
     gpioSetPullUpDown(pin, pull_up_down);
     int level = gpioRead(pin);
 
-    // TODO(ben): Set "glitch function" to give us debouncing.
-
     gpioSetAlertFuncEx(pin, dispatch_gpio_alert_, this);
 
     return Success<PinLevel>{level};
@@ -92,6 +91,7 @@ Outcome<void> PiGpioArray::set_output(PinId pin, PinLevel level)
     // TODO(ben): Check return codes.
     gpioSetMode(pin, PI_OUTPUT);
     gpioWrite(pin, level);
+    gpioGlitchFilter(pin, 0);
     gpioSetAlertFuncEx(pin, NULL, NULL);
 
     return Success<void>{};
