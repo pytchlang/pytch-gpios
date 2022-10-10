@@ -35,7 +35,7 @@ Test set-up:
 python3 -m venv --prompt websocket-gpios-venv venv
 . venv/bin/activate
 pip install --upgrade pip
-pip install black pytest pytest-asyncio
+pip install black pytest pytest-asyncio websockets
 ```
 
 To build and run Catch2 tests:
