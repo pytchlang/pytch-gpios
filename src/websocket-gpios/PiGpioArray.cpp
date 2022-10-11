@@ -55,7 +55,8 @@ Outcome<void> PiGpioArray::reset()
 
 Outcome<PinLevel> PiGpioArray::set_as_input(PinId pin, PullKind pull_kind)
 {
-    // TODO: Reject reserved pins 0, 1, >27.
+    if (pin < 2 || pin > 27)
+        return Failure{"invalid input pin number"};
 
     gpioSetMode(pin, PI_INPUT);
     gpioGlitchFilter(pin, 1200);
