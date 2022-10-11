@@ -78,6 +78,7 @@ Outcome<PinLevel> PiGpioArray::set_as_input(PinId pin, PullKind pull_kind)
     }
 
     gpioSetPullUpDown(pin, pull_up_down);
+    gpioDelay(1);  // Let level settle, following example in pigpio test code.
     int level = gpioRead(pin);
 
     gpioSetAlertFuncEx(pin, dispatch_gpio_alert_, this);
