@@ -87,7 +87,8 @@ Outcome<PinLevel> PiGpioArray::set_as_input(PinId pin, PullKind pull_kind)
 
 Outcome<void> PiGpioArray::set_output(PinId pin, PinLevel level)
 {
-    // TODO: Reject reserved pins 0, 1, 27+.
+    if (pin < 2 || pin > 27)
+        return Failure{"invalid output pin number"};
 
     // TODO(ben): Check return codes.
     gpioSetMode(pin, PI_OUTPUT);
