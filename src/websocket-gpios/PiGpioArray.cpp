@@ -101,7 +101,7 @@ Outcome<PinLevel> PiGpioArray::set_as_input(PinId pin, PullKind pull_kind)
 Outcome<void> PiGpioArray::set_output(PinId pin, PinLevel level)
 {
     if (pin < 2 || pin > 27)
-        return Failure{"invalid output pin number"};
+        return Failure{bad_pin_number_message_(pin, "output")};
 
     // TODO(ben): Check return codes.
     gpioSetMode(pin, PI_OUTPUT);
