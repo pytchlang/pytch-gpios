@@ -68,7 +68,7 @@ static std::string bad_pin_number_message_(
 Outcome<PinLevel> PiGpioArray::set_as_input(PinId pin, PullKind pull_kind)
 {
     if (pin < 2 || pin > 27)
-        return Failure{"invalid input pin number"};
+        return Failure{bad_pin_number_message_(pin, "input")};
 
     gpioSetMode(pin, PI_INPUT);
     gpioGlitchFilter(pin, 1200);
