@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include <pigpio.h>
 
 #include "PiGpioArray.h"
@@ -51,6 +53,16 @@ Outcome<void> PiGpioArray::reset()
     }
 
     return Success<void>{};
+}
+
+static std::string bad_pin_number_message_(
+    PinId pin, const std::string &kind)
+{
+    std::ostringstream oss;
+    oss << "pin " << static_cast<int>(pin)
+        << " cannot be used as " << kind
+        << " (valid pin numbers are 2, 3, ..., 27)";
+    return oss.str();
 }
 
 Outcome<PinLevel> PiGpioArray::set_as_input(PinId pin, PullKind pull_kind)
