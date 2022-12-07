@@ -118,6 +118,7 @@ class DoubleSnake(pytch.Sprite):
 should then let you blink the LED by clicking on the sprite, and
 control the size of the sprite with the pushbutton.
 
+
 ## Design overview
 
 ### IGpioArray: Interface for control of GPIOs
