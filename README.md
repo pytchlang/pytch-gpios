@@ -119,6 +119,111 @@ should then let you blink the LED by clicking on the sprite, and
 control the size of the sprite with the pushbutton.
 
 
+## Running self-contained on RPi400
+
+Ensure Pytch repos are at appropriate branches:
+
+* `pytch-webapp` on `rpi-gpios-1`
+* `pytch-vm` on `gpios-2`
+
+Update splat-mole with new commits and placeholder section in tutorial
+content file.  Make a dedicated `splat-moles-only` branch (off
+`release-recipes`) with just the splat-the-moles tutorial in it.  Use
+that.
+
+Create tmp WiP branch of pytch-releases with those submodule commits.
+Build the deployment zipfile as usual.
+
+Write fresh image of 64-bit "with desktop" version of Raspberry Pi OS
+to an SD card.  Boot RPi with monitor and wired Ethernet attached.  It
+resizes filesystem, generates SSH keys, reboots.
+
+Set location to Ireland, Dublin, "use English".
+
+Username "pytch", password "gpio202212".  Set screen size.  Skip WiFi
+connection.  Say "yes" to downloading updates (takes a minute or so to
+download and install updates).  Click "restart".
+
+Set hostname to something unique (starting with `rpi-pytch-1`) using
+the GUI config tool: World icon, preferences, Raspberry Pi
+configuration.  Enable SSH under "interfaces".  Then use "set
+hostname" button, reboot.  (Can now `ping rpi-pytch-1.local` from
+another machine on same LAN.)
+
+First launch of Chromium after changing hostname gives warning about
+profile in use on another computer.  OK to say "remove lock and
+relaunch".
+
+Install nginx with `sudo apt install nginx`.  This didn't need
+password; should it?
+(https://forums.raspberrypi.com/viewtopic.php?t=169212)
+
+Launch Chromium from menu.  Going to "localhost" shows nginx welcome
+page.
+
+Can ssh to RPi but, if you have lots of SSH keys stored, might need
+`ssh -o PreferredAuthentications=password` to avoid "too many
+authentication failures" error.
+
+Copy build zip to RPi.  Unzip (with `sudo`) into `/var/www/html`.
+
+Add file `pytch` to `/etc/nginx/sites-available` (currently this needs a
+file to be edited to specify the exact beta/gAAAABBB path):
+
+```
+server {
+    listen 127.0.0.1:80;
+    root /var/www/html;
+
+    location = / {
+        absolute_redirect off;
+        return 307 /beta/g123412341234/app/;
+    }
+
+    location ~ ^/(beta/g[0-9a-f]+)/app/ {
+        try_files $uri /$1/app/index.html =404;
+    }
+
+    location / {
+        try_files $uri =404;
+    }
+}
+```
+
+Enable with symlink from `sites-enabled`, removing `default` symlink
+from `sites-enabled`.  Restart nginx with `sudo systemctl restart
+nginx`.
+
+In Chromium, go to `localhost`.
+
+Splat-moles tutorial loads OK.  Takes a few seconds; slower than on a
+desktop/laptop but still perfectly usable.  (Have yet to try actual
+game.)
+
+Launch full gpio-enabled mole game; got GPIO reset timed out (as
+expected, because local WS server not running).
+
+Make archive of this repo `git archive -o /tmp/websocket-gpios.zip
+HEAD` and scp to RPi.  Unzip into fresh directory on RPi.
+
+Install cmake and boost on RPi `sudo apt install cmake
+libboost-all-dev`.  (Takes a while to install boost.  Get v1.74.)
+
+Follow above "building on RPi" instructions.  Compiling takes a little
+while (c.4min).  **TODO: Can we prepare pre-built binaries?  Are there
+runtime dependencies (boost)?  ldd shows libboost_log.**
+
+Run server with
+
+``` shell
+~/websocket-server/src/websocket-gpios/build $ sudo ./websocket-gpio-server 8055 pigpio
+```
+
+and re-green-flag project; worked.
+
+**TODO: Keyboard on RPi is set to US; fix.**
+
+
 ## Design overview
 
 ### IGpioArray: Interface for control of GPIOs
